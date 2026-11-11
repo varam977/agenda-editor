@@ -108,8 +108,9 @@ button{cursor:pointer}
 .rail i{display:block;height:100%}
 .rail.tracks{bottom:8px;height:7px;background:repeating-linear-gradient(90deg,#2a2a2a 0 3px,transparent 3px 11px);border-top:2px solid #3a3a3a;border-bottom:2px solid #3a3a3a}
 .rail.tracks i{height:2px;margin-top:-2px}
-.scene .tren{position:absolute;left:-6px;right:-6px;bottom:12px;height:104px;background:url(img/tren-3d.jpg) center bottom/contain no-repeat;mix-blend-mode:lighten;
-  -webkit-mask-image:radial-gradient(ellipse 62% 75% at 50% 55%,#000 60%,transparent 100%);mask-image:radial-gradient(ellipse 62% 75% at 50% 55%,#000 60%,transparent 100%)}
+.scene .tren{position:absolute;left:0;right:0;bottom:17px;height:100px;background:url(img/tren-3d.jpg) left bottom/cover no-repeat;
+  -webkit-mask-image:linear-gradient(90deg,#000 80%,transparent),linear-gradient(0deg,#000 75%,transparent);-webkit-mask-composite:source-in;
+  mask-image:linear-gradient(90deg,#000 80%,transparent),linear-gradient(0deg,#000 75%,transparent);mask-composite:intersect}
 .scene svg{position:absolute;right:0;bottom:12px;height:104px;width:auto}
 .strip{position:absolute;inset:0 0 22px;display:flex;gap:4px;padding:6px 0;background:#050505;
   border-top:5px solid transparent;border-bottom:5px solid transparent;
