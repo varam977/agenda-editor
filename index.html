@@ -394,7 +394,7 @@ function fillFixed(){
       const k=`${y}-${pad(m)}`; if(k>now||(f.end&&k>f.end))break;
       if(!S.items.some(i=>i.fixId===f.id&&i.date.startsWith(k))){
         const last=new Date(y,m,0).getDate();
-        S.items.push({id:uid(),fixId:f.id,date:`${k}-${pad(Math.min(f.day,last))}`,cat:f.cat,client:f.client,title:f.title,hours:f.hours,
+        S.items.push({id:uid(),fixId:f.id,date:`${k}-${pad(Math.min(f.day,last))}`,cat:f.cat,cats:f.cats,client:f.client,title:f.title,hours:f.hours,
           pay:f.pay,amount:f.amount,value:f.value,swap:f.swap,paid:false,got:'',note:f.note||''});n++}
       m++; if(m>12){m=1;y++}
     }
@@ -422,8 +422,18 @@ const cli=id=>S.clients.find(c=>c.id===id);
 const dt=s=>new Date(s+'T12:00');
 const addDays=(s,n)=>{const d=dt(s);d.setDate(d.getDate()+n);return ymd(d)};
 const monday=s=>{const d=dt(s);return addDays(s,-((d.getDay()+6)%7))};
+/* packs: un trabajo puede tener varios servicios */
+const catsOf=i=>(i.cats&&i.cats.length?i.cats:[i.cat]);
+const has=(i,cid)=>catsOf(i).includes(cid);
+const part=(i,cid)=>has(i,cid)?1/catsOf(i).length:0;
+const catSum=(a,cid)=>a.reduce((s,i)=>s+num(i.amount)*part(i,cid),0);
+const catHrs=(a,cid)=>a.reduce((s,i)=>s+num(i.hours)*part(i,cid),0);
+const isPack=i=>catsOf(i).length>1;
+const codeItem=i=>isPack(i)?'PACK':codeOf(cat(i.cat));
+const namesOf=i=>catsOf(i).map(id=>esc(cat(id).name)).join(' + ');
+const packBg=i=>{const cs=catsOf(i).map(id=>cat(id).color);return cs.length>1?`linear-gradient(180deg,${cs.map((c,k)=>`${c} ${k/cs.length*100}% ${(k+1)/cs.length*100}%`).join(',')})`:cs[0]};
 const blk=i=>{const c=cat(i.cat),k=cli(i.client);
-  return `<button class="blk" style="--c:${c.color}" data-edit="${i.id}"><small>${codeOf(c)}</small><b>${esc(i.title||k?.name||c.name)}${i.title&&k?` · ${esc(k.name)}`:''}</b><span>${i.hours?fmtH(i.hours)+' h · ':''}${payOf(i)==='pagado'?eur(i.amount):PAY[payOf(i)].toUpperCase()}</span></button>`};
+  return `<button class="blk" style="--c:${c.color}${isPack(i)?";border-image:"+packBg(i)+" 1":""}" data-edit="${i.id}"><small>${codeItem(i)}</small><b>${esc(i.title||k?.name||namesOf(i))}${i.title&&k?` · ${esc(k.name)}`:''}</b><span>${i.hours?fmtH(i.hours)+' h · ':''}${payOf(i)==='pagado'?eur(i.amount):PAY[payOf(i)].toUpperCase()}</span></button>`};
 
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1700)}
 
@@ -443,8 +453,8 @@ function renderCal(){
   if(mode==='dia')return renderDia();
   $('#mlbl').textContent=`${MES[cur.getMonth()]} ${cur.getFullYear()}`;
   const m=ym(cur), mi=S.items.filter(i=>i.date.startsWith(m));
-  $('#types').innerHTML=S.cats.map(c=>{const it=mi.filter(i=>i.cat===c.id);
-    return `<div class="type" style="--c:${c.color}"><small>${esc(c.name)}</small><b>${eur(sum(it))}</b><span>${it.length} ${it.length===1?'día':'días'}</span></div>`}).join('');
+  $('#types').innerHTML=S.cats.map(c=>{const it=mi.filter(i=>has(i,c.id));
+    return `<div class="type" style="--c:${c.color}"><small>${esc(c.name)}</small><b>${eur(catSum(mi,c.id))}</b><span>${it.length} ${it.length===1?'día':'días'}</span></div>`}).join('');
   const start=(cur.getDay()+6)%7, d0=new Date(cur); d0.setDate(1-start);
   let h='';
   for(let k=0;k<42;k++){
@@ -454,7 +464,7 @@ function renderCal(){
     const tot=sum(its), we=d.getDay()===0||d.getDay()===6;
     h+=`<button class="day${out?' out':''}${we?' we':''}${its.length?' has':''}${s===today?' today':''}${s===sel?' sel':''}" data-d="${s}">
       <span class="n">${pad(d.getDate())}</span>
-      ${its.slice(0,4).map(i=>`<i class="clip" style="background:${cat(i.cat).color}"></i>`).join('')}
+      ${its.flatMap(catsOf).slice(0,4).map(id=>`<i class="clip" style="background:${cat(id).color}"></i>`).join('')}
       ${tot?`<span class="eur">${Math.round(tot)}€</span>`:''}</button>`;
   }
   $('#grid').innerHTML=h;
@@ -489,8 +499,8 @@ function rowItem(i){
     ?`${eur(i.amount)}<br><span class="tag ${i.paid?'ok':'pend'}" data-pay="${i.id}">${i.paid?'COBRADO':num(i.got)?'FALTAN '+eur(num(i.amount)-num(i.got)):'PENDIENTE'}</span>`
     :`<span style="color:var(--mute)">${num(i.value)?'vale '+eur(i.value):'—'}</span><br><span class="tag free">${p==='gratis'?'GRATIS':'CANJE'}</span>`;
   return `<div class="row" data-edit="${i.id}">
-    <div class="code" style="--c:${c.color}">${codeOf(c)}</div>
-    <div class="t"><b>${esc(i.title||c.name)}</b><span>${esc(c.name)} · ${det}${p==='canje'&&i.swap?' · por '+esc(i.swap):''}</span></div>
+    <div class="code" style="--c:${c.color}${isPack(i)?';border-image:'+packBg(i)+' 1;font-size:10px':''}">${codeItem(i)}</div>
+    <div class="t"><b>${esc(i.title)||namesOf(i)}</b><span>${namesOf(i)} · ${det}${p==='canje'&&i.swap?' · por '+esc(i.swap):''}</span></div>
     <div class="m">${right}</div></div>`;
 }
 
@@ -503,7 +513,7 @@ function renderFac(){
   $('#k-fac').textContent=eur(fac);$('#k-cob').textContent=eur(cob);$('#k-pen').textContent=eur(fac-cob);
   $('#neto').textContent=eur(fac-gas);
   $('#netohint').textContent=gas?`− ${eur(gas)} IA`:'';
-  $('#porcat').innerHTML=S.cats.map(c=>{const it=mi.filter(i=>i.cat===c.id), v=sum(it), w=fac?v/fac*100:0;
+  $('#porcat').innerHTML=S.cats.map(c=>{const it=mi.filter(i=>has(i,c.id)), v=catSum(mi,c.id), w=fac?v/fac*100:0;
     const fill=`<i style="width:${w}%;background:${c.color}"></i>`;
     let scene='';
     if(c.imgs&&c.imgs.length) scene=`<div class="strip">${c.imgs.slice(0,4).map(x=>`<figure><img src="${esc(x.src)}" alt="" loading="lazy">${x.label?`<figcaption>${esc(x.label)}</figcaption>`:''}</figure>`).join('')}</div><div class="rail">${fill}</div>`;
@@ -518,8 +528,8 @@ function renderFac(){
   const hm=hrs(mi), hy=hrs(S.items.filter(i=>i.date.startsWith(y))), paidH=hrs(mi.filter(i=>payOf(i)==='pagado'));
   $('#h-mes').textContent=fmtH(hm);
   $('#h-hint').textContent=`${mi.length} ${mi.length===1?'trabajo':'trabajos'} este mes`;
-  const hmax=Math.max(...S.cats.map(c=>hrs(mi.filter(i=>i.cat===c.id))),1);
-  $('#h-cat').innerHTML=S.cats.map(c=>{const h=hrs(mi.filter(i=>i.cat===c.id));
+  const hmax=Math.max(...S.cats.map(c=>catHrs(mi,c.id)),1);
+  $('#h-cat').innerHTML=S.cats.map(c=>{const h=catHrs(mi,c.id);
     return `<div class="row"><div class="code" style="--c:${c.color}">${codeOf(c)}</div><div class="t"><b>${esc(c.name)}</b><div class="bar"><i style="width:${h/hmax*100}%;background:${c.color}"></i></div></div><div class="m">${fmtH(h)} h</div></div>`}).join('');
   $('#h-anio').textContent=y; $('#h-year').textContent=fmtH(hy)+' h';
   $('#h-eurh').textContent=paidH?`${eur(fac/paidH)}/hora pagada`:'';
@@ -604,7 +614,7 @@ function sheetCli(id){
 function renderMas(){
   $('#catlist').innerHTML=S.cats.map(c=>`<div class="row" data-cedit="${c.id}">
     <div class="code" style="--c:${c.color}">${codeOf(c)}</div>
-    <div class="t"><b>${esc(c.name)}</b><span>${S.items.filter(i=>i.cat===c.id).length} apuntados</span></div>
+    <div class="t"><b>${esc(c.name)}</b><span>${S.items.filter(i=>has(i,c.id)).length} apuntados</span></div>
     <div class="m" style="color:var(--mute)">→</div></div>`).join('');
 }
 
@@ -620,7 +630,7 @@ function sheetItem(id,date){
   const it=S.items.find(i=>i.id===id)||{id:null,date:date||sel,cat:S.cats[0]?.id,client:'',title:'',hours:'',amount:'',paid:false,note:''};
   const cliOpts=()=>`<option value="">Sin cliente</option>${[...S.clients].sort((a,b)=>a.name.localeCompare(b.name)).map(k=>`<option value="${k.id}"${k.id===it.client?' selected':''}>${esc(k.name)}</option>`).join('')}<option value="__new">+ Nuevo cliente…</option>`;
   open(`<h2>${it.id?'Editar':'Nuevo trabajo'}</h2>
-    <label>Trabajo</label><div class="opts" id="fcats">${S.cats.map(c=>`<button type="button" data-v="${c.id}" style="--c:${c.color}" class="${c.id===it.cat?'on':''}">${esc(c.name)}</button>`).join('')}</div>
+    <label>Servicios <span style="text-transform:none;letter-spacing:0">· toca varios para hacer un pack</span></label><div class="opts" id="fcats">${S.cats.map(c=>`<button type="button" data-v="${c.id}" style="--c:${c.color}" class="${catsOf(it).includes(c.id)?'on':''}">${esc(c.name)}</button>`).join('')}</div>
     <label>Cliente</label><select id="f-cli">${cliOpts()}</select>
     <label>Descripción</label><input id="f-title" value="${esc(it.title)}" placeholder="Reel, boda, web… (opcional)">
     <label>Día</label><input id="f-date" type="date" value="${it.date}">
@@ -652,7 +662,10 @@ function sheetItem(id,date){
   const showPay=()=>{$('#pay-pagado').hidden=pay!=='pagado';$('#pay-otro').hidden=pay==='pagado';$('#swapw').hidden=pay!=='canje';$('#gotw').hidden=st!=='2';
     $('#gotleft').textContent=`Falta por cobrar: ${eur(num($('#f-amount').value)-num($('#f-got').value))}`};
   showPay(); $('#f-got').oninput=$('#f-amount').oninput=showPay;
-  pick('#fcats',v=>c=v); pick('#fpaid',v=>{st=v;showPay()}); pick('#fpay',v=>{pay=v;showPay()}); pick('#fmin',v=>mins=+v);
+  let cs=catsOf(it).filter(id=>S.cats.some(x=>x.id===id));
+  $$('#fcats button').forEach(b=>b.onclick=()=>{const v=b.dataset.v;
+    cs=cs.includes(v)?cs.filter(x=>x!==v):[...cs,v]; b.classList.toggle('on',cs.includes(v)); c=cs[0]});
+  pick('#fpaid',v=>{st=v;showPay()}); pick('#fpay',v=>{pay=v;showPay()}); pick('#fmin',v=>mins=+v);
   $$('#fquick button').forEach(b=>b.onclick=()=>{const h=+b.dataset.v;$('#f-h').value=Math.floor(h)||'';mins=Math.round(h%1*60);
     $$('#fmin button').forEach(x=>x.classList.toggle('on',+x.dataset.v===mins))});
   $('#f-cli').onchange=e=>{if(e.target.value!=='__new')return;
@@ -660,13 +673,13 @@ function sheetItem(id,date){
     if(n){const k={id:uid(),name:n,phone:'',note:''};S.clients.push(k);save();it.client=k.id}
     e.target.innerHTML=cliOpts();e.target.value=it.client||''};
   $('#f-save').onclick=()=>{
-    if(!c)return toast('Crea un tipo de trabajo en Ajustes');
-    const o={...it,id:it.id||uid(),cat:c,paid:st==='1',got:st==='2'?$('#f-got').value:'',client:$('#f-cli').value.replace('__new',''),title:$('#f-title').value.trim(),date:$('#f-date').value||sel,
+    if(!cs.length)return toast('Elige al menos un servicio');
+    const o={...it,id:it.id||uid(),cat:cs[0],cats:cs,paid:st==='1',got:st==='2'?$('#f-got').value:'',client:$('#f-cli').value.replace('__new',''),title:$('#f-title').value.trim(),date:$('#f-date').value||sel,
       hours:String(num($('#f-h').value)+mins/60||''),pay,
       amount:pay==='pagado'?$('#f-amount').value:'',value:pay==='pagado'?'':$('#f-value').value,
       swap:pay==='canje'?$('#f-swap').value.trim():'',note:$('#f-note').value.trim()};
     if(pay!=='pagado')o.paid=false;
-    const tpl=x=>({cat:x.cat,client:x.client,title:x.title,hours:x.hours,pay:x.pay,amount:x.amount,value:x.value,swap:x.swap,note:x.note});
+    const tpl=x=>({cat:x.cat,cats:x.cats,client:x.client,title:x.title,hours:x.hours,pay:x.pay,amount:x.amount,value:x.value,swap:x.swap,note:x.note});
     if(freq==='mes'&&!o.fixId){const f={id:uid(),start:o.date.slice(0,7),day:+o.date.slice(8),end:'',...tpl(o)};S.fixed.push(f);o.fixId=f.id}
     else if(freq==='mes'){const f=S.fixed.find(x=>x.id===o.fixId);if(f)Object.assign(f,tpl(o))}
     else if(freq==='una'&&o.fixId){const f=S.fixed.find(x=>x.id===o.fixId);if(f&&!f.end)f.end=o.date.slice(0,7)}
@@ -718,7 +731,7 @@ function sheetCat(id){
     const o={...c,id:c.id||uid(),name,code:($('#c-code').value.trim()||name.slice(0,3)).toUpperCase(),color:col,imgs};
     const k=S.cats.findIndex(x=>x.id===o.id); k>=0?S.cats[k]=o:S.cats.push(o);save();close();render();toast('GUARDADO');
   };
-  if(c.id)$('#c-del').onclick=()=>{const n=S.items.filter(i=>i.cat===c.id).length;
+  if(c.id)$('#c-del').onclick=()=>{const n=S.items.filter(i=>has(i,c.id)).length;
     if(confirm(n?`Tiene ${n} apuntados; se quedarán sin tipo. ¿Eliminar?`:'¿Eliminar?')){S.cats=S.cats.filter(x=>x.id!==c.id);save();close();render()}};
 }
 
