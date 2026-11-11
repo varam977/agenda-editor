@@ -1,4 +1,4 @@
-# Timeline · Agenda
+# VARAM · Agenda
 
 Agenda tipo editor de vídeo para iPhone: días de curro (edición de vídeo, webs 3D, extras de camarero y pistas propias), facturación por mes y gastos de IA.
 
