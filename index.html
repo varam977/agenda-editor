@@ -129,6 +129,24 @@ button{cursor:pointer}
 .chart div.cur i{background:var(--acc)}
 .chart span{font-family:var(--mono);font-size:9px;color:var(--mute)}
 .chart div.cur span{color:var(--bone)}
+/* tiempo */
+.time{display:flex;gap:8px;align-items:stretch}
+.time>div:first-child{position:relative;width:96px;flex:none}
+.time>div:first-child span{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-family:var(--mono);color:var(--mute)}
+.time .opts{flex:1;flex-wrap:nowrap}
+.time .opts button{flex:1;font-family:var(--mono)}
+#fquick button{font-family:var(--mono);font-size:12px;padding:7px 9px}
+.tag.free{color:var(--bone);border-style:dashed}
+/* bocadillo de horas */
+.bubble{position:relative;margin:14px 0 28px;border:1px solid var(--line2);background:var(--cell2)}
+.bubble::after{content:"";position:absolute;left:34px;bottom:-14px;width:22px;height:14px;background:var(--cell2);border-left:1px solid var(--line2);border-bottom:1px solid var(--line2);transform:skewX(-35deg);transform-origin:top left}
+.bubble .bh{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--line)}
+.bubble .bh small{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.18em;writing-mode:vertical-rl;transform:rotate(180deg)}
+.bubble .bh b{font-family:var(--head);font-weight:400;font-size:64px;line-height:.9}
+.bubble .bh span{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--mute);text-align:right}
+.bubble .bf{display:flex;align-items:baseline;gap:10px;padding:10px 12px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--mute)}
+.bubble .bf>b{font-family:var(--head);font-weight:400;font-size:22px;color:var(--bone)}
+.bubble .bf span:last-child{margin-left:auto}
 /* selector mes / semana / día */
 .seg{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line2);margin-bottom:12px}
 .seg button{background:var(--cell);border:0;border-right:1px solid var(--line2);padding:10px 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--mute)}
@@ -265,6 +283,19 @@ input:focus,textarea:focus{border-color:var(--bone)}
         <div class="kpi"><small>Pendiente</small><b id="k-pen" style="color:var(--warn)">0 €</b></div>
       </div>
     </div>
+    <div class="bubble">
+      <div class="bh"><small>HORAS</small><b id="h-mes">0:00</b><span id="h-hint"></span></div>
+      <div class="rows" id="h-cat"></div>
+      <div class="bf"><span>En <b id="h-anio"></b></span><b id="h-year">0:00 h</b><span id="h-eurh"></span></div>
+    </div>
+    <div class="card"><h3><span>Gratis y canjes</span><span id="free-hint"></span></h3>
+      <div class="kpis" style="border-top:0">
+        <div class="kpi"><small>Gratis</small><b id="free-n">0</b></div>
+        <div class="kpi"><small>Canjes</small><b id="swap-n">0</b></div>
+        <div class="kpi"><small>Valdrían</small><b id="free-v">0 €</b></div>
+      </div>
+      <div class="b" style="border-top:1px solid var(--line)"><div class="chart" id="freechart" style="height:70px"></div></div>
+    </div>
     <div class="card"><h3>Por trabajo</h3><div class="rows" id="porcat"></div></div>
     <div class="card"><h3><span>Facturado</span><span id="anio"></span></h3><div class="b"><div class="chart" id="chart"></div></div></div>
     <div class="card"><h3>Trabajos del mes</h3><div class="rows" id="lista"></div></div>
@@ -324,7 +355,8 @@ const KEY='varam-agenda-v1';
 const COLORS=['#ff4d1f','#ece6d9','#c9d94a','#e0a43a','#6fa8c9','#c2708a','#8f8a80'];
 const DEFAULT={cats:[
   {id:'video',name:'Edición de vídeo',code:'VID',color:'#ff4d1f',imgs:[
-    {src:'img/comida-antes.jpg',label:'ANTES'},{src:'img/comida-despues.jpg',label:'DESPUÉS'},
+    {src:'img/comida-antes.jpg',label:'ANTES'},{src:'img/comida-despues.jpg',label:'DESPUÉS'}]},
+  {id:'videoclip',name:'Videoclips',code:'CLIP',color:'#c2708a',imgs:[
     {src:'img/videoclip-1.jpg',label:'VIDEOCLIP'},{src:'img/videoclip-2.jpg',label:''}]},
   {id:'web3d',name:'Webs 3D',code:'3D',color:'#ece6d9',art:'tren'},
   {id:'camarero',name:'Extra camarero',code:'BAR',color:'#c9d94a',art:'bandeja'}],
@@ -340,6 +372,35 @@ const BANDEJA=`<svg viewBox="0 0 220 104" fill="none" stroke="#ece6d9" stroke-wi
 const IA_SUG=['Claude','ChatGPT','Higgsfield','Meshy','Midjourney','ElevenLabs','Runway','Kling','Suno','Freepik','CapCut Pro','Adobe'];
 let S;try{S=JSON.parse(localStorage.getItem(KEY))||structuredClone(DEFAULT)}catch(e){S=structuredClone(DEFAULT)}
 S.cats=S.cats||structuredClone(DEFAULT.cats); S.items=S.items||[]; S.clients=S.clients||[]; S.gastos=S.gastos||[];
+/* actualización 2: añade Videoclips y separa sus fotos de Edición de vídeo (una sola vez) */
+if(!(S.v>=2)){
+  if(!S.cats.some(c=>c.id==='videoclip')){const k=S.cats.findIndex(c=>c.id==='video');S.cats.splice(k+1,0,structuredClone(DEFAULT.cats[1]))}
+  const v=S.cats.find(c=>c.id==='video');if(v&&v.imgs)v.imgs=v.imgs.filter(x=>!/videoclip-/.test(x.src));
+  S.v=2;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+}
+const PAY={pagado:'Pagado',gratis:'Gratis',canje:'Canje'};
+const payOf=i=>i.pay||'pagado';
+const fmtH=h=>{h=num(h);if(!h)return '0:00';const m=Math.round(h*60);return `${Math.floor(m/60)}:${pad(m%60)}`};
+const hrs=a=>a.reduce((s,i)=>s+num(i.hours),0);
+const cobr=a=>a.reduce((s,i)=>s+(i.paid?num(i.amount):Math.min(num(i.got),num(i.amount))),0);
+
+/* trabajos fijos mensuales: crea el apunte de cada mes desde que empieza hasta hoy */
+S.fixed=S.fixed||[];
+function fillFixed(){
+  const now=ym(new Date());let n=0;
+  S.fixed.forEach(f=>{
+    let [y,m]=f.start.split('-').map(Number);
+    for(let g=0;g<600;g++){
+      const k=`${y}-${pad(m)}`; if(k>now||(f.end&&k>f.end))break;
+      if(!S.items.some(i=>i.fixId===f.id&&i.date.startsWith(k))){
+        const last=new Date(y,m,0).getDate();
+        S.items.push({id:uid(),fixId:f.id,date:`${k}-${pad(Math.min(f.day,last))}`,cat:f.cat,client:f.client,title:f.title,hours:f.hours,
+          pay:f.pay,amount:f.amount,value:f.value,swap:f.swap,paid:false,got:'',note:f.note||''});n++}
+      m++; if(m>12){m=1;y++}
+    }
+  });
+  if(n)save();
+}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -362,7 +423,7 @@ const dt=s=>new Date(s+'T12:00');
 const addDays=(s,n)=>{const d=dt(s);d.setDate(d.getDate()+n);return ymd(d)};
 const monday=s=>{const d=dt(s);return addDays(s,-((d.getDay()+6)%7))};
 const blk=i=>{const c=cat(i.cat),k=cli(i.client);
-  return `<button class="blk" style="--c:${c.color}" data-edit="${i.id}"><small>${codeOf(c)}</small><b>${esc(i.title||k?.name||c.name)}${i.title&&k?` · ${esc(k.name)}`:''}</b><span>${i.hours?i.hours+'h · ':''}${eur(i.amount)}</span></button>`};
+  return `<button class="blk" style="--c:${c.color}" data-edit="${i.id}"><small>${codeOf(c)}</small><b>${esc(i.title||k?.name||c.name)}${i.title&&k?` · ${esc(k.name)}`:''}</b><span>${i.hours?fmtH(i.hours)+' h · ':''}${payOf(i)==='pagado'?eur(i.amount):PAY[payOf(i)].toUpperCase()}</span></button>`};
 
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1700)}
 
@@ -411,7 +472,7 @@ function renderWeek(){
       <div class="cl">${its.map(blk).join('')}<button class="add" data-new="${s}">${its.length?'+':'+ AÑADIR'}</button></div></div>`;
   }
   const wi=S.items.filter(i=>i.date>=m0&&i.date<=m6);
-  $('#week').innerHTML=h+`<div class="wd"><div class="dl">TOTAL</div><div class="cl" style="font-family:var(--head);font-size:24px">${eur(sum(wi))} <span class="mono" style="font-size:11px;color:var(--mute)">${wi.length} trabajos · ${wi.reduce((s,i)=>s+num(i.hours),0)} h</span></div></div>`;
+  $('#week').innerHTML=h+`<div class="wd"><div class="dl">TOTAL</div><div class="cl" style="font-family:var(--head);font-size:24px">${eur(sum(wi))} <span class="mono" style="font-size:11px;color:var(--mute)">${wi.length} trabajos · ${fmtH(hrs(wi))} h</span></div></div>`;
 }
 function renderDia(){
   const d=dt(sel), its=S.items.filter(i=>i.date===sel);
@@ -422,11 +483,15 @@ function renderDia(){
 }
 function rowItem(i){
   const c=cat(i.cat), k=cli(i.client);
-  const det=[i.date.slice(8)+'.'+i.date.slice(5,7),k?k.name:'',i.hours?i.hours+' h':''].filter(Boolean).join(' · ');
+  const det=[i.date.slice(8)+'.'+i.date.slice(5,7),k?k.name:'',i.hours?fmtH(i.hours)+' h':''].filter(Boolean).join(' · ');
+  const p=payOf(i);
+  const right=p==='pagado'
+    ?`${eur(i.amount)}<br><span class="tag ${i.paid?'ok':'pend'}" data-pay="${i.id}">${i.paid?'COBRADO':num(i.got)?'FALTAN '+eur(num(i.amount)-num(i.got)):'PENDIENTE'}</span>`
+    :`<span style="color:var(--mute)">${num(i.value)?'vale '+eur(i.value):'—'}</span><br><span class="tag free">${p==='gratis'?'GRATIS':'CANJE'}</span>`;
   return `<div class="row" data-edit="${i.id}">
     <div class="code" style="--c:${c.color}">${codeOf(c)}</div>
-    <div class="t"><b>${esc(i.title||c.name)}</b><span>${esc(c.name)} · ${det}</span></div>
-    <div class="m">${eur(i.amount)}<br><span class="tag ${i.paid?'ok':'pend'}" data-pay="${i.id}">${i.paid?'COBRADO':'PENDIENTE'}</span></div></div>`;
+    <div class="t"><b>${esc(i.title||c.name)}</b><span>${esc(c.name)} · ${det}${p==='canje'&&i.swap?' · por '+esc(i.swap):''}</span></div>
+    <div class="m">${right}</div></div>`;
 }
 
 /* FACTURAS */
@@ -434,7 +499,7 @@ function renderFac(){
   const m=ym(cur), y=cur.getFullYear();
   $('#flbl').textContent=`${MES[cur.getMonth()]} ${y}`;
   const mi=S.items.filter(i=>i.date.startsWith(m)).sort((a,b)=>a.date.localeCompare(b.date));
-  const fac=sum(mi), cob=sum(mi.filter(i=>i.paid)), gas=sum(S.gastos.filter(g=>g.month===m));
+  const fac=sum(mi), cob=cobr(mi), gas=sum(S.gastos.filter(g=>g.month===m));
   $('#k-fac').textContent=eur(fac);$('#k-cob').textContent=eur(cob);$('#k-pen').textContent=eur(fac-cob);
   $('#neto').textContent=eur(fac-gas);
   $('#netohint').textContent=gas?`− ${eur(gas)} IA`:'';
@@ -449,6 +514,21 @@ function renderFac(){
       <div class="t"><b>${esc(c.name)}</b><span>${it.length} ${it.length===1?'trabajo':'trabajos'}</span>
       ${scene===null?`<div class="bar">${fill}</div>`:''}</div>
       <div class="m">${eur(v)}</div></div>${scene?`<div class="scene">${scene}</div>`:''}</div>`}).join('');
+  // horas
+  const hm=hrs(mi), hy=hrs(S.items.filter(i=>i.date.startsWith(y))), paidH=hrs(mi.filter(i=>payOf(i)==='pagado'));
+  $('#h-mes').textContent=fmtH(hm);
+  $('#h-hint').textContent=`${mi.length} ${mi.length===1?'trabajo':'trabajos'} este mes`;
+  const hmax=Math.max(...S.cats.map(c=>hrs(mi.filter(i=>i.cat===c.id))),1);
+  $('#h-cat').innerHTML=S.cats.map(c=>{const h=hrs(mi.filter(i=>i.cat===c.id));
+    return `<div class="row"><div class="code" style="--c:${c.color}">${codeOf(c)}</div><div class="t"><b>${esc(c.name)}</b><div class="bar"><i style="width:${h/hmax*100}%;background:${c.color}"></i></div></div><div class="m">${fmtH(h)} h</div></div>`}).join('');
+  $('#h-anio').textContent=y; $('#h-year').textContent=fmtH(hy)+' h';
+  $('#h-eurh').textContent=paidH?`${eur(fac/paidH)}/hora pagada`:'';
+  // gratis y canjes
+  const fr=mi.filter(i=>payOf(i)==='gratis'), sw=mi.filter(i=>payOf(i)==='canje');
+  $('#free-n').textContent=fr.length; $('#swap-n').textContent=sw.length;
+  $('#free-v').textContent=eur([...fr,...sw].reduce((s,i)=>s+num(i.value),0));
+  $('#free-hint').textContent=`${fmtH(hrs([...fr,...sw]))} h`;
+  chart('#freechart',k=>S.items.filter(i=>i.date.startsWith(`${y}-${pad(k+1)}`)&&payOf(i)!=='pagado').length);
   $('#anio').textContent=y;
   chart('#chart',k=>sum(S.items.filter(i=>i.date.startsWith(`${y}-${pad(k+1)}`))));
   $('#lista').innerHTML=mi.length?mi.map(rowItem).join(''):`<div class="empty">SIN TRABAJOS ESTE MES</div>`;
@@ -490,8 +570,8 @@ function renderIA(){
 function renderCli(){
   const y=String(cliYear), its=S.items.filter(i=>i.client&&(cliYear==='todo'||i.date.startsWith(y)));
   $('#cli-year').textContent=cliYear==='todo'?'SIEMPRE':y;
-  const tot=sum(its), cob=sum(its.filter(i=>i.paid));
-  const rk=S.clients.map(c=>{const ci=its.filter(i=>i.client===c.id);return{c,v:sum(ci),n:ci.length,p:sum(ci.filter(i=>!i.paid))}}).sort((a,b)=>b.v-a.v);
+  const tot=sum(its), cob=cobr(its);
+  const rk=S.clients.map(c=>{const ci=its.filter(i=>i.client===c.id);return{c,v:sum(ci),n:ci.length,p:sum(ci)-cobr(ci)}}).sort((a,b)=>b.v-a.v);
   const mx=rk[0]?.v||1;
   $('#cli-tot').textContent=eur(tot);$('#cli-cob').textContent=eur(cob);$('#cli-pen').textContent=eur(tot-cob);
   $('#cli-top').textContent=rk[0]?.v?rk[0].c.name:'—';
@@ -504,7 +584,7 @@ function renderCli(){
 function sheetCli(id){
   const c=S.clients.find(x=>x.id===id)||{id:null,name:'',phone:'',note:''};
   const its=S.items.filter(i=>i.client===c.id).sort((a,b)=>b.date.localeCompare(a.date));
-  const tot=sum(its), cob=sum(its.filter(i=>i.paid));
+  const tot=sum(its), cob=cobr(its);
   open(`<h2>${c.id?esc(c.name):'Nuevo cliente'}</h2>
     ${c.id?`<div class="kpis" style="border:1px solid var(--line);margin-top:10px"><div class="kpi"><small>Total</small><b>${eur(tot)}</b></div><div class="kpi"><small>Cobrado</small><b style="color:var(--ok)">${eur(cob)}</b></div><div class="kpi"><small>Pendiente</small><b style="color:var(--warn)">${eur(tot-cob)}</b></div></div>`:''}
     <label>Nombre</label><input id="k-name" value="${esc(c.name)}" placeholder="Pinardo, Betsabé…">
@@ -543,24 +623,54 @@ function sheetItem(id,date){
     <label>Trabajo</label><div class="opts" id="fcats">${S.cats.map(c=>`<button type="button" data-v="${c.id}" style="--c:${c.color}" class="${c.id===it.cat?'on':''}">${esc(c.name)}</button>`).join('')}</div>
     <label>Cliente</label><select id="f-cli">${cliOpts()}</select>
     <label>Descripción</label><input id="f-title" value="${esc(it.title)}" placeholder="Reel, boda, web… (opcional)">
-    <div class="two"><div><label>Día</label><input id="f-date" type="date" value="${it.date}"></div>
-    <div><label>Horas</label><input id="f-hours" type="number" inputmode="decimal" step="0.5" value="${it.hours}" placeholder="0"></div></div>
-    <label>Importe (€)</label><input id="f-amount" type="number" inputmode="decimal" step="0.01" value="${it.amount}" placeholder="0">
-    <label>Estado</label><div class="opts" id="fpaid"><button type="button" data-v="0" class="${!it.paid?'on':''}">Pendiente</button><button type="button" data-v="1" class="${it.paid?'on':''}">Cobrado</button></div>
+    <label>Día</label><input id="f-date" type="date" value="${it.date}">
+    <label>Frecuencia</label><div class="opts" id="ffreq"><button type="button" data-v="una" class="${it.fixId?'':'on'}">Puntual</button><button type="button" data-v="mes" class="${it.fixId?'on':''}">Fijo · todos los meses</button></div>
+    ${it.fixId?`<div class="hint" style="margin-top:6px">Se repite cada mes desde ${(()=>{const f=S.fixed.find(x=>x.id===it.fixId);return f?MES[+f.start.slice(5)-1]+' '+f.start.slice(0,4):''})()}. Lo que cambies aquí se aplica también a los meses siguientes.</div>`:''}
+    <label id="tlbl">Tiempo</label>
+    <div class="time"><div><input id="f-h" type="number" inputmode="numeric" min="0" step="1" value="${Math.floor(num(it.hours))||''}" placeholder="0"><span>h</span></div>
+      <div class="opts" id="fmin">${[0,15,30,45].map(m=>`<button type="button" data-v="${m}" class="${Math.round(num(it.hours)%1*60)===m?'on':''}">${pad(m)}</button>`).join('')}</div></div>
+    <div class="opts" id="fquick" style="margin-top:6px">${[.25,.5,1,1.5,2,2.5,3,3.5,4,6,8].map(h=>`<button type="button" data-v="${h}">${fmtH(h)}</button>`).join('')}</div>
+    <label>Cómo se paga</label><div class="opts" id="fpay">${Object.entries(PAY).map(([k,v])=>`<button type="button" data-v="${k}" class="${payOf(it)===k?'on':''}">${v}</button>`).join('')}</div>
+    <div id="pay-pagado">
+      <label>Importe (€)</label><input id="f-amount" type="number" inputmode="decimal" step="0.01" value="${it.amount}" placeholder="0">
+      <label>Estado</label><div class="opts" id="fpaid"><button type="button" data-v="0" class="${!it.paid&&!num(it.got)?'on':''}">Pendiente</button><button type="button" data-v="2" class="${!it.paid&&num(it.got)?'on':''}">Parte cobrada</button><button type="button" data-v="1" class="${it.paid?'on':''}">Cobrado</button></div>
+      <div id="gotw"><label>Cobrado hasta ahora (€)</label><input id="f-got" type="number" inputmode="decimal" step="0.01" value="${it.got||''}" placeholder="0"><div class="hint" id="gotleft" style="margin-top:6px"></div></div>
+    </div>
+    <div id="pay-otro">
+      <div id="swapw"><label>A cambio de</label><input id="f-swap" value="${esc(it.swap)}" placeholder="Cena, ropa, un tatuaje…"></div>
+      <label>Lo que valdría (€)</label><input id="f-value" type="number" inputmode="decimal" step="0.01" value="${it.value||''}" placeholder="Opcional">
+    </div>
     <label>Nota</label><textarea id="f-note" rows="2" placeholder="Opcional">${esc(it.note)}</textarea>
     <button class="btn" id="f-save">Guardar</button>
-    ${it.id?'<button class="btn del" id="f-del">Eliminar</button>':''}`);
-  let c=it.cat, p=it.paid;
-  pick('#fcats',v=>c=v); pick('#fpaid',v=>p=v==='1');
+    ${it.fixId&&S.fixed.some(x=>x.id===it.fixId&&!x.end)?'<button class="btn ghost" id="f-stop">Dejar de repetir después de este mes</button>':''}
+    ${it.id?'<button class="btn del" id="f-del">Eliminar'+(it.fixId?' solo este mes':'')+'</button>':''}`);
+  let freq=it.fixId?'mes':'una';
+  const showFreq=()=>$('#tlbl').textContent=freq==='mes'?'Tiempo al mes':'Tiempo';
+  showFreq(); pick('#ffreq',v=>{freq=v;showFreq()});
+  if($('#f-stop'))$('#f-stop').onclick=()=>{const f=S.fixed.find(x=>x.id===it.fixId);f.end=it.date.slice(0,7);save();close();render();toast('YA NO SE REPITE')};
+  let c=it.cat, st=it.paid?'1':num(it.got)?'2':'0', pay=payOf(it), mins=Math.round(num(it.hours)%1*60);
+  const showPay=()=>{$('#pay-pagado').hidden=pay!=='pagado';$('#pay-otro').hidden=pay==='pagado';$('#swapw').hidden=pay!=='canje';$('#gotw').hidden=st!=='2';
+    $('#gotleft').textContent=`Falta por cobrar: ${eur(num($('#f-amount').value)-num($('#f-got').value))}`};
+  showPay(); $('#f-got').oninput=$('#f-amount').oninput=showPay;
+  pick('#fcats',v=>c=v); pick('#fpaid',v=>{st=v;showPay()}); pick('#fpay',v=>{pay=v;showPay()}); pick('#fmin',v=>mins=+v);
+  $$('#fquick button').forEach(b=>b.onclick=()=>{const h=+b.dataset.v;$('#f-h').value=Math.floor(h)||'';mins=Math.round(h%1*60);
+    $$('#fmin button').forEach(x=>x.classList.toggle('on',+x.dataset.v===mins))});
   $('#f-cli').onchange=e=>{if(e.target.value!=='__new')return;
     const n=(prompt('Nombre del cliente')||'').trim();
     if(n){const k={id:uid(),name:n,phone:'',note:''};S.clients.push(k);save();it.client=k.id}
     e.target.innerHTML=cliOpts();e.target.value=it.client||''};
   $('#f-save').onclick=()=>{
     if(!c)return toast('Crea un tipo de trabajo en Ajustes');
-    const o={id:it.id||uid(),cat:c,paid:p,client:$('#f-cli').value.replace('__new',''),title:$('#f-title').value.trim(),date:$('#f-date').value||sel,
-      hours:$('#f-hours').value,amount:$('#f-amount').value,note:$('#f-note').value.trim()};
-    S.items=S.items.filter(i=>i.id!==o.id).concat(o);save();sel=o.date;close();render();toast('GUARDADO');
+    const o={...it,id:it.id||uid(),cat:c,paid:st==='1',got:st==='2'?$('#f-got').value:'',client:$('#f-cli').value.replace('__new',''),title:$('#f-title').value.trim(),date:$('#f-date').value||sel,
+      hours:String(num($('#f-h').value)+mins/60||''),pay,
+      amount:pay==='pagado'?$('#f-amount').value:'',value:pay==='pagado'?'':$('#f-value').value,
+      swap:pay==='canje'?$('#f-swap').value.trim():'',note:$('#f-note').value.trim()};
+    if(pay!=='pagado')o.paid=false;
+    const tpl=x=>({cat:x.cat,client:x.client,title:x.title,hours:x.hours,pay:x.pay,amount:x.amount,value:x.value,swap:x.swap,note:x.note});
+    if(freq==='mes'&&!o.fixId){const f={id:uid(),start:o.date.slice(0,7),day:+o.date.slice(8),end:'',...tpl(o)};S.fixed.push(f);o.fixId=f.id}
+    else if(freq==='mes'){const f=S.fixed.find(x=>x.id===o.fixId);if(f)Object.assign(f,tpl(o))}
+    else if(freq==='una'&&o.fixId){const f=S.fixed.find(x=>x.id===o.fixId);if(f&&!f.end)f.end=o.date.slice(0,7)}
+    S.items=S.items.filter(i=>i.id!==o.id).concat(o);fillFixed();save();sel=o.date;close();render();toast(freq==='mes'?'GUARDADO · CADA MES':'GUARDADO');
   };
   if(it.id)$('#f-del').onclick=()=>{if(confirm('¿Eliminar este trabajo?')){S.items=S.items.filter(i=>i.id!==it.id);save();close();render()}};
 }
@@ -621,7 +731,7 @@ function shrink(file){return new Promise(r=>{const im=new Image();im.onload=()=>
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-pay],[data-edit],[data-gedit],[data-cedit],[data-cli],[data-new],[data-d],[data-mv],[data-mode],[data-go]');
   if(!t)return;
-  if(t.dataset.pay){e.stopPropagation();const i=S.items.find(x=>x.id===t.dataset.pay);i.paid=!i.paid;save();render();toast(i.paid?'COBRADO':'PENDIENTE');return}
+  if(t.dataset.pay){e.stopPropagation();const i=S.items.find(x=>x.id===t.dataset.pay);i.paid=!i.paid;if(i.paid)i.got='';save();render();toast(i.paid?'COBRADO':'PENDIENTE');return}
   if(t.dataset.edit)return sheetItem(t.dataset.edit);
   if(t.dataset.gedit)return sheetGasto(t.dataset.gedit);
   if(t.dataset.cedit)return sheetCat(t.dataset.cedit);
@@ -652,10 +762,10 @@ $('#g-copiar').onclick=()=>{
 $('#exp').onclick=()=>{const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`varam-agenda-${today}.json`;a.click()};
 $('#imp').onclick=()=>$('#impf').click();
-$('#impf').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!d.cats||!d.items)throw 0;S={gastos:[],...d};save();render();toast('COPIA IMPORTADA')}catch(_){toast('ARCHIVO NO VÁLIDO')}};
-$('#reset').onclick=()=>{if(confirm('Se borrará todo lo apuntado en este iPhone. ¿Seguro?')){S=structuredClone(DEFAULT);save();render();toast('AGENDA VACÍA')}};
+$('#impf').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!d.cats||!d.items)throw 0;S={gastos:[],clients:[],fixed:[],...d};save();render();toast('COPIA IMPORTADA')}catch(_){toast('ARCHIVO NO VÁLIDO')}};
+$('#reset').onclick=()=>{if(confirm('Se borrará todo lo apuntado en este iPhone. ¿Seguro?')){S={...structuredClone(DEFAULT),clients:[],fixed:[],v:2};save();render();toast('AGENDA VACÍA')}};
 
-render();
+fillFixed();render();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
