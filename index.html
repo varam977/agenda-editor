@@ -345,7 +345,7 @@ input:focus,textarea:focus{border-color:var(--bone)}
       <input type="file" id="impf" accept="application/json,.json" hidden>
       <button class="btn del" id="reset">Borrar todo</button>
     </div></div>
-    <div class="card"><h3>Instalar</h3><div class="b">
+    <div class="card"><h3><span>Instalar</span><span>VERSIÓN 8</span></h3><div class="b">
       <div class="hint">Ábrela en <b>Safari</b> → <b>Compartir</b> → <b>Añadir a pantalla de inicio</b>. Va a pantalla completa y sin internet.</div>
     </div></div>
   </section>
@@ -836,7 +836,10 @@ $('#impf').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].tex
 $('#reset').onclick=()=>{if(confirm('Se borrará todo lo apuntado en este iPhone. ¿Seguro?')){S={...structuredClone(DEFAULT),clients:[],fixed:[],v:2};save();render();toast('AGENDA VACÍA')}};
 
 fillFixed();render();
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update();document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update()})}).catch(()=>{});
+  let recargado=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(recargado)return;recargado=true;location.reload()});
+}
 </script>
 </body>
 </html>
