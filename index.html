@@ -129,6 +129,17 @@ button{cursor:pointer}
 .chart div.cur i{background:var(--acc)}
 .chart span{font-family:var(--mono);font-size:9px;color:var(--mute)}
 .chart div.cur span{color:var(--bone)}
+/* nichos */
+.niche{border-top:1px solid var(--line);padding:12px}
+.niche:first-child{border-top:0}
+.niche .nh{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.niche .nh b{display:block;font-size:15px;font-weight:600}
+.niche .nh span{font-family:var(--mono);font-size:10.5px;color:var(--mute)}
+.niche .nt{margin-left:auto;font-family:var(--head);font-size:26px}
+.niche .dots{display:flex;flex-direction:column;gap:2px;width:6px;flex:none;align-self:stretch}
+.niche .dots i{flex:1;display:block}
+.niche .nl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--mute);padding:2px 0 2px 16px}
+.niche .nl b{color:var(--bone);font-weight:500}
 /* tiempo */
 .time{display:flex;gap:8px;align-items:stretch}
 .time>div:first-child{position:relative;width:96px;flex:none}
@@ -275,7 +286,7 @@ input:focus,textarea:focus{border-color:var(--bone)}
       <button class="ibtn" data-mv="1">→</button>
     </div>
     <div class="card">
-      <h3><span>Neto del mes</span><span id="netohint"></span></h3>
+      <h3><span>Neto global del mes</span><span id="netohint"></span></h3>
       <div class="b"><div class="big" id="neto">0 €</div></div>
       <div class="kpis">
         <div class="kpi"><small>Facturado</small><b id="k-fac">0 €</b></div>
@@ -283,6 +294,7 @@ input:focus,textarea:focus{border-color:var(--bone)}
         <div class="kpi"><small>Pendiente</small><b id="k-pen" style="color:var(--warn)">0 €</b></div>
       </div>
     </div>
+    <div class="card"><h3>Por nicho</h3><div id="nichos"></div></div>
     <div class="bubble">
       <div class="bh"><small>HORAS</small><b id="h-mes">0:00</b><span id="h-hint"></span></div>
       <div class="rows" id="h-cat"></div>
@@ -301,22 +313,23 @@ input:focus,textarea:focus{border-color:var(--bone)}
     <div class="card"><h3>Trabajos del mes</h3><div class="rows" id="lista"></div></div>
   </section>
 
-  <!-- GASTOS IA -->
+  <!-- GASTOS -->
   <section class="view" id="v-ia">
+    <div class="seg" id="gseg" style="grid-template-columns:1fr 1fr"><button data-gt="ia" class="on">IA · VÍDEO Y WEBS</button><button data-gt="personal">PERSONALES FIJOS</button></div>
     <div class="sec">
       <button class="ibtn" data-mv="-1">←</button>
       <div class="lbl" id="glbl"></div>
       <button class="ibtn" data-mv="1">→</button>
     </div>
     <div class="card">
-      <h3><span>Gasto IA del mes</span><span id="ghint"></span></h3>
+      <h3><span id="g-t1">Gasto IA del mes</span><span id="ghint"></span></h3>
       <div class="b"><div class="big" id="gtot">0 €</div>
-      <button class="btn ghost" id="g-copiar">Repetir suscripciones del mes anterior</button></div>
+      <button class="btn ghost" id="g-copiar">Repetir los fijos del mes anterior</button></div>
     </div>
-    <div class="card"><h3>Herramientas del mes</h3><div class="rows" id="glista"></div></div>
-    <div class="card"><h3><span>Gasto IA por mes</span><span id="ganio"></span></h3><div class="b"><div class="chart" id="gchart"></div></div></div>
+    <div class="card"><h3 id="g-t2">Herramientas del mes</h3><div class="rows" id="glista"></div></div>
+    <div class="card"><h3><span id="g-t3">Gasto IA por mes</span><span id="ganio"></span></h3><div class="b"><div class="chart" id="gchart"></div></div></div>
     <div class="card"><h3><span>Por herramienta</span><span id="ganio2"></span></h3><div class="rows" id="gtools"></div></div>
-    <div class="card"><h3><span>IA frente a facturado</span><span id="ganio3"></span></h3><div class="rows" id="gratio"></div></div>
+    <div class="card"><h3><span id="g-t4">IA frente a lo que generan</span><span id="ganio3"></span></h3><div class="rows" id="gratio"></div></div>
   </section>
 
   <!-- AJUSTES -->
@@ -343,7 +356,7 @@ input:focus,textarea:focus{border-color:var(--bone)}
   <button data-go="fac">FACTURAS</button>
   <button class="fab" id="fab" aria-label="Añadir">+</button>
   <button data-go="cli">CLIENTES</button>
-  <button data-go="ia">GASTOS IA</button>
+  <button data-go="ia">GASTOS</button>
 </div></nav>
 
 <div class="sheet-bg" id="sbg"></div>
@@ -354,13 +367,24 @@ input:focus,textarea:focus{border-color:var(--bone)}
 const KEY='varam-agenda-v1';
 const COLORS=['#ff4d1f','#ece6d9','#c9d94a','#e0a43a','#6fa8c9','#c2708a','#8f8a80'];
 const DEFAULT={cats:[
-  {id:'video',name:'Edición de vídeo',code:'VID',color:'#ff4d1f',imgs:[
+  {id:'video',name:'Edición de vídeo',code:'VID',color:'#ff4d1f',niche:'creativo',imgs:[
     {src:'img/comida-antes.jpg',label:'ANTES'},{src:'img/comida-despues.jpg',label:'DESPUÉS'}]},
-  {id:'videoclip',name:'Videoclips',code:'CLIP',color:'#c2708a',imgs:[
+  {id:'videoclip',name:'Videoclips',code:'CLIP',color:'#c2708a',niche:'creativo',imgs:[
     {src:'img/videoclip-1.jpg',label:'VIDEOCLIP'},{src:'img/videoclip-2.jpg',label:''}]},
-  {id:'web3d',name:'Webs 3D',code:'3D',color:'#ece6d9',art:'tren'},
-  {id:'camarero',name:'Extra camarero',code:'BAR',color:'#c9d94a',art:'bandeja'}],
+  {id:'web3d',name:'Webs 3D',code:'3D',color:'#ece6d9',niche:'creativo',art:'tren'},
+  {id:'camarero',name:'Extra camarero',code:'BAR',color:'#c9d94a',niche:'camarero',art:'bandeja'},
+  {id:'ventas',name:'Vinted / Wallapop',code:'VW',color:'#6fa8c9',niche:'ventas'},
+  {id:'salario',name:'Salario',code:'SAL',color:'#8f8a80',niche:'salario'}],
   items:[],gastos:[]};
+/* nichos: cada uno con sus gastos que se restan */
+const NICHOS={
+  creativo:{name:'Vídeo y webs 3D',sub:'Edición, videoclips y webs 3D',resta:'ia',restaName:'Gastos IA'},
+  camarero:{name:'Camarero',sub:'Extras · limpio, sin gastos'},
+  ventas:{name:'Vinted / Wallapop',sub:'Ropa · limpio, sin gastos'},
+  salario:{name:'Salario',sub:'Menos gastos personales fijos',resta:'personal',restaName:'Gastos personales'},
+  otro:{name:'Otros',sub:'Sin gastos'}};
+const GTYPES={ia:'IA',personal:'Personales'};
+const PERS_SUG=['Alquiler','Luz','Agua','Internet','Móvil','Gimnasio','Seguro','Transporte','Comida','Suscripciones'];
 const BANDEJA=`<svg viewBox="0 0 220 104" fill="none" stroke="#ece6d9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
   <path d="M66 18c0 14 4 22 11 22s11-8 11-22z"/><path d="M77 40v14M70 54h14"/>
   <path d="M100 26l2 28h14l2-28z" /><path d="M101 36h16" opacity=".5"/>
@@ -378,6 +402,15 @@ if(!(S.v>=2)){
   const v=S.cats.find(c=>c.id==='video');if(v&&v.imgs)v.imgs=v.imgs.filter(x=>!/videoclip-/.test(x.src));
   S.v=2;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
 }
+/* actualización 3: nichos, Vinted/Wallapop, Salario y gastos IA/personales */
+if(!(S.v>=3)){
+  const N={video:'creativo',videoclip:'creativo',web3d:'creativo',camarero:'camarero'};
+  S.cats.forEach(c=>{if(!c.niche)c.niche=N[c.id]||'otro'});
+  ['ventas','salario'].forEach(id=>{if(!S.cats.some(c=>c.id===id))S.cats.push(structuredClone(DEFAULT.cats.find(c=>c.id===id)))});
+  S.gastos.forEach(g=>{if(!g.type)g.type='ia'});
+  S.v=3;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+}
+const nicheOf=c=>c.niche||'otro';
 const PAY={pagado:'Pagado',gratis:'Gratis',canje:'Canje'};
 const payOf=i=>i.pay||'pagado';
 const fmtH=h=>{h=num(h);if(!h)return '0:00';const m=Math.round(h*60);return `${Math.floor(m/60)}:${pad(m%60)}`};
@@ -416,7 +449,7 @@ const codeOf=c=>esc(c.code||c.name.slice(0,3).toUpperCase());
 const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const today=ymd(new Date());
 let cur=new Date(); cur.setDate(1);
-let sel=today, view='cal', mode='mes', cliYear=new Date().getFullYear();
+let sel=today, view='cal', mode='mes', cliYear=new Date().getFullYear(), gtype='ia';
 const DIAS=['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
 const cli=id=>S.clients.find(c=>c.id===id);
 const dt=s=>new Date(s+'T12:00');
@@ -512,7 +545,16 @@ function renderFac(){
   const fac=sum(mi), cob=cobr(mi), gas=sum(S.gastos.filter(g=>g.month===m));
   $('#k-fac').textContent=eur(fac);$('#k-cob').textContent=eur(cob);$('#k-pen').textContent=eur(fac-cob);
   $('#neto').textContent=eur(fac-gas);
-  $('#netohint').textContent=gas?`− ${eur(gas)} IA`:'';
+  $('#netohint').textContent=gas?`ingresos − ${eur(gas)} gastos`:'';
+  // balance por nicho
+  $('#nichos').innerHTML=Object.entries(NICHOS).filter(([k])=>S.cats.some(c=>nicheOf(c)===k)).map(([k,n])=>{
+    const cs=S.cats.filter(c=>nicheOf(c)===k), ing=cs.reduce((s,c)=>s+catSum(mi,c.id),0);
+    const g=n.resta?sum(S.gastos.filter(x=>x.month===m&&(x.type||'ia')===n.resta)):0;
+    return `<div class="niche">
+      <div class="nh"><div class="dots">${cs.map(c=>`<i style="background:${c.color}"></i>`).join('')}</div><div><b>${n.name}</b><span>${n.sub}</span></div><div class="nt">${eur(ing-g)}</div></div>
+      <div class="nl"><span>Ingresos</span><b>${eur(ing)}</b></div>
+      ${n.resta?`<div class="nl"><span>− ${n.restaName}</span><b style="color:var(--acc)">${g?'− '+eur(g):'0 €'}</b></div>`:''}
+    </div>`}).join('');
   $('#porcat').innerHTML=S.cats.map(c=>{const it=mi.filter(i=>has(i,c.id)), v=catSum(mi,c.id), w=fac?v/fac*100:0;
     const fill=`<i style="width:${w}%;background:${c.color}"></i>`;
     let scene='';
@@ -550,29 +592,36 @@ function chart(s,fn){
 
 /* GASTOS IA */
 function renderIA(){
-  const m=ym(cur), y=cur.getFullYear(), g=S.gastos.filter(x=>x.month===m);
+  const ia=gtype==='ia', G=S.gastos.filter(x=>(x.type||'ia')===gtype);
+  $$('#gseg button').forEach(b=>b.classList.toggle('on',b.dataset.gt===gtype));
+  $('#g-t1').textContent=ia?'Gasto IA del mes':'Gastos personales del mes';
+  $('#g-t2').textContent=ia?'Herramientas del mes':'Gastos del mes';
+  $('#g-t3').textContent=ia?'Gasto IA por mes':'Gastos personales por mes';
+  $('#g-t4').textContent=ia?'IA frente a vídeo y webs 3D':'Gastos frente a salario';
+  const m=ym(cur), y=cur.getFullYear(), g=G.filter(x=>x.month===m);
   $('#glbl').textContent=`${MES[cur.getMonth()]} ${y}`;
   $('#gtot').textContent=eur(sum(g));
-  $('#ghint').textContent=`${eur(sum(S.gastos.filter(x=>x.month.startsWith(y))))} en ${y}`;
+  $('#ghint').textContent=`${eur(sum(G.filter(x=>x.month.startsWith(y))))} en ${y}`;
   $('#ganio').textContent=y;
-  chart('#gchart',k=>sum(S.gastos.filter(x=>x.month===`${y}-${pad(k+1)}`)));
+  chart('#gchart',k=>sum(G.filter(x=>x.month===`${y}-${pad(k+1)}`)));
   $('#glista').innerHTML=g.length?g.map(x=>`<div class="row" data-gedit="${x.id}">
-    <div class="code" style="--c:var(--mute)">IA</div>
-    <div class="t"><b>${esc(x.tool)}</b><span>${x.sub?'Suscripción':'Pago puntual'}${x.note?' · '+esc(x.note):''}</span></div>
+    <div class="code" style="--c:var(--mute)">${ia?'IA':'€'}</div>
+    <div class="t"><b>${esc(x.tool)}</b><span>${x.sub?'Fijo cada mes':'Pago puntual'}${x.note?' · '+esc(x.note):''}</span></div>
     <div class="m">${eur(x.amount)}</div></div>`).join(''):`<div class="empty">SIN GASTOS ESTE MES</div>`;
-  // por herramienta en el año
-  const yg=S.gastos.filter(x=>x.month.startsWith(y)), tools={};
+  // por herramienta / concepto en el año
+  const yg=G.filter(x=>x.month.startsWith(y)), tools={};
   yg.forEach(x=>tools[x.tool]=(tools[x.tool]||0)+num(x.amount));
   const tl=Object.entries(tools).sort((a,b)=>b[1]-a[1]), tmax=tl[0]?.[1]||1, ttot=sum(yg)||1;
   $('#ganio2').textContent=y;
   $('#gtools').innerHTML=tl.length?tl.map(([t,v],k)=>`<div class="row"><div class="code" style="--c:${k===0?'var(--acc)':'var(--mute)'}">${pad(k+1)}</div>
-    <div class="t"><b>${esc(t)}</b><span>${Math.round(v/ttot*100)}% del gasto IA</span><div class="bar"><i style="width:${v/tmax*100}%;background:${k===0?'var(--acc)':'var(--bone)'}"></i></div></div>
+    <div class="t"><b>${esc(t)}</b><span>${Math.round(v/ttot*100)}% del total</span><div class="bar"><i style="width:${v/tmax*100}%;background:${k===0?'var(--acc)':'var(--bone)'}"></i></div></div>
     <div class="m">${eur(v)}</div></div>`).join(''):`<div class="empty">SIN GASTOS EN ${y}</div>`;
-  // IA frente a lo facturado
-  const yf=sum(S.items.filter(i=>i.date.startsWith(y))), yi=sum(yg);
+  // gasto frente a lo que genera su nicho
+  const nk=ia?'creativo':'salario', yitems=S.items.filter(i=>i.date.startsWith(y));
+  const yf=S.cats.filter(c=>nicheOf(c)===nk).reduce((s,c)=>s+catSum(yitems,c.id),0), yi=sum(yg);
   $('#ganio3').textContent=y;
-  $('#gratio').innerHTML=`<div class="row"><div class="t"><b>Facturado</b><div class="bar"><i style="width:100%;background:var(--ok)"></i></div></div><div class="m">${eur(yf)}</div></div>
-    <div class="row"><div class="t"><b>Gasto IA</b><span>${yf?Math.round(yi/yf*100)+'% de lo facturado':'—'}</span><div class="bar"><i style="width:${yf?Math.min(100,yi/yf*100):0}%;background:var(--acc)"></i></div></div><div class="m">${eur(yi)}</div></div>
+  $('#gratio').innerHTML=`<div class="row"><div class="t"><b>${ia?'Vídeo y webs 3D':'Salario'}</b><div class="bar"><i style="width:100%;background:var(--ok)"></i></div></div><div class="m">${eur(yf)}</div></div>
+    <div class="row"><div class="t"><b>${ia?'Gasto IA':'Gastos personales'}</b><span>${yf?Math.round(yi/yf*100)+'% de lo que entra':'—'}</span><div class="bar"><i style="width:${yf?Math.min(100,yi/yf*100):0}%;background:var(--acc)"></i></div></div><div class="m">${eur(yi)}</div></div>
     <div class="row"><div class="t"><b>Te queda</b></div><div class="m" style="font-family:var(--head);font-size:20px">${eur(yf-yi)}</div></div>`;
 }
 
@@ -689,21 +738,27 @@ function sheetItem(id,date){
 }
 
 function sheetGasto(id){
-  const g=S.gastos.find(x=>x.id===id)||{id:null,month:ym(cur),tool:'',amount:'',sub:true,note:''};
-  open(`<h2>${g.id?'Editar gasto':'Gasto IA'}</h2>
-    <label>Herramienta</label><input id="g-tool" list="iasug" value="${esc(g.tool)}" placeholder="Claude, Higgsfield, Meshy…">
-    <datalist id="iasug">${IA_SUG.map(s=>`<option value="${s}">`).join('')}</datalist>
+  const g=S.gastos.find(x=>x.id===id)||{id:null,type:gtype,month:ym(cur),tool:'',amount:'',sub:true,note:''};
+  let t=g.type||'ia';
+  open(`<h2>${g.id?'Editar gasto':'Nuevo gasto'}</h2>
+    <label>De qué es</label><div class="opts" id="gtype"><button type="button" data-v="ia" class="${t==='ia'?'on':''}">IA · se resta de vídeo y webs</button><button type="button" data-v="personal" class="${t==='personal'?'on':''}">Personal · se resta del salario</button></div>
+    <label id="g-tl">Herramienta</label><input id="g-tool" list="gsug" value="${esc(g.tool)}">
+    <datalist id="gsug"></datalist>
     <div class="two"><div><label>Mes</label><input id="g-month" type="month" value="${g.month}"></div>
     <div><label>Importe (€)</label><input id="g-amount" type="number" inputmode="decimal" step="0.01" value="${g.amount}" placeholder="0"></div></div>
-    <label>Tipo</label><div class="opts" id="gsub"><button type="button" data-v="1" class="${g.sub?'on':''}">Suscripción</button><button type="button" data-v="0" class="${!g.sub?'on':''}">Puntual</button></div>
+    <label>Frecuencia</label><div class="opts" id="gsub"><button type="button" data-v="1" class="${g.sub?'on':''}">Fijo cada mes</button><button type="button" data-v="0" class="${!g.sub?'on':''}">Puntual</button></div>
     <label>Nota</label><input id="g-note" value="${esc(g.note)}" placeholder="Opcional">
     <button class="btn" id="g-save">Guardar</button>
     ${g.id?'<button class="btn del" id="g-del">Eliminar</button>':''}`);
   let s=g.sub; pick('#gsub',v=>s=v==='1');
+  const showT=()=>{$('#g-tl').textContent=t==='ia'?'Herramienta':'Concepto';
+    $('#g-tool').placeholder=t==='ia'?'Claude, Higgsfield, Meshy…':'Alquiler, luz, móvil…';
+    $('#gsug').innerHTML=(t==='ia'?IA_SUG:PERS_SUG).map(x=>`<option value="${x}">`).join('')};
+  showT(); pick('#gtype',v=>{t=v;showT()});
   $('#g-save').onclick=()=>{
-    const tool=$('#g-tool').value.trim(); if(!tool)return toast('Pon la herramienta');
-    const o={id:g.id||uid(),tool,month:$('#g-month').value||ym(cur),amount:$('#g-amount').value,sub:s,note:$('#g-note').value.trim()};
-    S.gastos=S.gastos.filter(x=>x.id!==o.id).concat(o);save();close();render();toast('GUARDADO');
+    const tool=$('#g-tool').value.trim(); if(!tool)return toast(t==='ia'?'Pon la herramienta':'Pon el concepto');
+    const o={id:g.id||uid(),type:t,tool,month:$('#g-month').value||ym(cur),amount:$('#g-amount').value,sub:s,note:$('#g-note').value.trim()};
+    S.gastos=S.gastos.filter(x=>x.id!==o.id).concat(o);gtype=t;save();close();render();toast('GUARDADO');
   };
   if(g.id)$('#g-del').onclick=()=>{if(confirm('¿Eliminar este gasto?')){S.gastos=S.gastos.filter(x=>x.id!==g.id);save();close();render()}};
 }
@@ -712,14 +767,15 @@ function sheetCat(id){
   const c=S.cats.find(x=>x.id===id)||{id:null,name:'',code:'',color:COLORS[S.cats.length%COLORS.length]};
   open(`<h2>${c.id?'Editar trabajo':'Nuevo trabajo'}</h2>
     <div class="two" style="grid-template-columns:1fr 90px"><div><label>Nombre</label><input id="c-name" value="${esc(c.name)}" placeholder="Bodas, fotografía…"></div>
-    <div><label>Siglas</label><input id="c-code" value="${esc(c.code)}" maxlength="3" placeholder="BOD" style="text-transform:uppercase;text-align:center"></div></div>
+    <div><label>Siglas</label><input id="c-code" value="${esc(c.code)}" maxlength="4" placeholder="BOD" style="text-transform:uppercase;text-align:center"></div></div>
+    <label>Nicho</label><div class="opts" id="cniche">${Object.entries(NICHOS).map(([k,n])=>`<button type="button" data-v="${k}" class="${nicheOf(c)===k?"on":""}">${n.name}</button>`).join("")}</div>
     <label>Color</label><div class="colors" id="ccol">${COLORS.map(k=>`<button type="button" data-k="${k}" style="background:${k}" class="${k===c.color?'on':''}"></button>`).join('')}</div>
     <label>Fotos (salen en Facturas, máx. 4)</label><div class="thumbs" id="cimgs"></div>
     <button class="btn ghost" id="c-addimg" type="button">Añadir pantallazos</button>
     <input type="file" id="c-file" accept="image/*" multiple hidden>
     <button class="btn" id="c-save">Guardar</button>
     ${c.id?'<button class="btn del" id="c-del">Eliminar</button>':''}`);
-  let col=c.color, imgs=[...(c.imgs||[])];
+  let col=c.color, imgs=[...(c.imgs||[])], niche=nicheOf(c); pick("#cniche",v=>niche=v);
   const drawImgs=()=>{$('#cimgs').innerHTML=imgs.map((x,k)=>`<div><img src="${esc(x.src)}" alt=""><button type="button" data-rm="${k}">×</button></div>`).join('');
     $$('#cimgs [data-rm]').forEach(b=>b.onclick=()=>{imgs.splice(+b.dataset.rm,1);drawImgs()})};
   drawImgs();
@@ -728,7 +784,7 @@ function sheetCat(id){
   $$('#ccol button').forEach(b=>b.onclick=()=>{col=b.dataset.k;$$('#ccol button').forEach(x=>x.classList.toggle('on',x===b))});
   $('#c-save').onclick=()=>{
     const name=$('#c-name').value.trim(); if(!name)return toast('Ponle nombre');
-    const o={...c,id:c.id||uid(),name,code:($('#c-code').value.trim()||name.slice(0,3)).toUpperCase(),color:col,imgs};
+    const o={...c,id:c.id||uid(),name,code:($('#c-code').value.trim()||name.slice(0,3)).toUpperCase(),color:col,imgs,niche};
     const k=S.cats.findIndex(x=>x.id===o.id); k>=0?S.cats[k]=o:S.cats.push(o);save();close();render();toast('GUARDADO');
   };
   if(c.id)$('#c-del').onclick=()=>{const n=S.items.filter(i=>has(i,c.id)).length;
@@ -742,8 +798,9 @@ function shrink(file){return new Promise(r=>{const im=new Image();im.onload=()=>
 
 /* EVENTOS */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-pay],[data-edit],[data-gedit],[data-cedit],[data-cli],[data-new],[data-d],[data-mv],[data-mode],[data-go]');
+  const t=e.target.closest('[data-gt],[data-pay],[data-edit],[data-gedit],[data-cedit],[data-cli],[data-new],[data-d],[data-mv],[data-mode],[data-go]');
   if(!t)return;
+  if(t.dataset.gt){gtype=t.dataset.gt;return render()}
   if(t.dataset.pay){e.stopPropagation();const i=S.items.find(x=>x.id===t.dataset.pay);i.paid=!i.paid;if(i.paid)i.got='';save();render();toast(i.paid?'COBRADO':'PENDIENTE');return}
   if(t.dataset.edit)return sheetItem(t.dataset.edit);
   if(t.dataset.gedit)return sheetGasto(t.dataset.gedit);
@@ -768,7 +825,7 @@ $('#cli-year').onclick=()=>{const y=new Date().getFullYear();cliYear=cliYear==='
 $('#newcat').onclick=()=>sheetCat();
 $('#g-copiar').onclick=()=>{
   const m=ym(cur),p=new Date(cur);p.setMonth(p.getMonth()-1);const pm=ym(p);
-  const subs=S.gastos.filter(x=>x.month===pm&&x.sub&&!S.gastos.some(y=>y.month===m&&y.tool===x.tool));
+  const subs=S.gastos.filter(x=>(x.type||'ia')===gtype&&x.month===pm&&x.sub&&!S.gastos.some(y=>y.month===m&&y.tool===x.tool&&(y.type||'ia')===gtype));
   if(!subs.length)return toast('NADA QUE REPETIR');
   S.gastos.push(...subs.map(x=>({...x,id:uid(),month:m})));save();render();toast(`${subs.length} AÑADIDAS`);
 };
