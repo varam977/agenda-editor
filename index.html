@@ -66,7 +66,7 @@ button{cursor:pointer}
 .film::before{left:0}.film::after{right:0}
 .dow{display:grid;grid-template-columns:repeat(7,1fr);font-family:var(--mono);font-size:9.5px;color:var(--mute);text-align:center;padding:4px 0 8px;letter-spacing:.14em}
 .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.day{aspect-ratio:.74;background:var(--cell);border:1px solid var(--line);padding:4px;display:flex;flex-direction:column;gap:2px;position:relative;text-align:left;border-radius:2px}
+.day{aspect-ratio:.56;background:var(--cell);border:1px solid var(--line);padding:4px;display:flex;flex-direction:column;gap:2px;position:relative;text-align:left;border-radius:2px}
 .day.out{opacity:.22}
 .day.we{background:#0e0e0e}
 .day .n{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--mute)}
@@ -75,12 +75,58 @@ button{cursor:pointer}
 .day.today .n{color:var(--acc);font-weight:600}
 .day.sel{background:var(--cell2);outline:1px solid var(--bone);outline-offset:-1px}
 .clip{height:4px;width:100%}
+/* etiqueta de color dentro del día: una línea por trabajo con su nombre corto */
+.lab{display:block;height:11px;line-height:11px;font-family:var(--mono);font-size:7px;font-weight:600;letter-spacing:0;padding:0 2px;border-radius:1px;white-space:nowrap;overflow:hidden;color:#0a0a0a;background:var(--c)}
+.lab.more{background:none;color:var(--mute);padding:0}
+/* leyenda de colores arriba */
+.keys{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.key{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--cell);padding:5px 8px;font-family:var(--mono);font-size:10px;letter-spacing:.06em}
+.key i{width:14px;height:8px;background:var(--c);display:block}
+.key b{font-weight:600}
+.key span{color:var(--mute)}
+/* gráfica de círculo */
+.pie{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:14px 12px}
+.ring{width:132px;height:132px;border-radius:50%;flex:none;position:relative;margin:0 auto}
+.hole{position:absolute;inset:24px;border-radius:50%;background:var(--cell);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.hole b{font-family:var(--head);font-weight:400;font-size:20px}
+.hole small{font-family:var(--mono);font-size:8.5px;color:var(--mute);letter-spacing:.12em;text-transform:uppercase}
+.pl{flex:1;min-width:170px;display:flex;flex-direction:column;gap:7px}
+.pl div{display:flex;align-items:center;gap:8px}
+.pl i{width:10px;height:10px;flex:none;border-radius:2px}
+.pl span{flex:1;min-width:0;font-size:13px;line-height:1.2;overflow:hidden;text-overflow:ellipsis}
+.pl span small{display:block;font-family:var(--mono);font-size:10px;color:var(--mute)}
+.pl em{font-style:normal;font-family:var(--mono);font-size:8.5px;color:var(--mute);border:1px solid var(--line2);padding:0 3px;margin-left:4px}
+.pl b{font-family:var(--mono);font-size:13px}
+/* cuentas del mes, tipo ticket */
+.tk{display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px;border-top:1px solid var(--line);font-size:14px}
+.tk:first-child{border-top:0}
+.tk b{font-family:var(--mono);font-weight:600}
+.tk.sub{padding-left:24px;font-size:13px;color:var(--mute)}
+.tk.tot{background:var(--cell2);border-top:1px solid var(--line2)}
+.tk.tot span{font-family:var(--head);font-size:22px;text-transform:uppercase}
+.tk.tot b{font-family:var(--head);font-weight:400;font-size:30px}
+.paybtn{border:1px solid var(--ok);color:var(--ok);background:none;font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:7px 9px;font-weight:600;margin-top:4px}
+.filt{padding:10px 12px;border-bottom:1px solid var(--line)}
+.filt button{font-family:var(--mono);font-size:11px;padding:7px 9px}
+.split{display:flex;height:10px;margin-top:12px;background:var(--line)}
+.split i{display:block;height:100%}
+.sl{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--mute)}
+.sl b{color:var(--bone);font-weight:600}
+.ghead{display:flex;align-items:center;gap:8px}
+.ghead i{width:10px;height:10px;display:block}
+details.card>summary{list-style:none;padding:13px 12px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.18em;color:var(--mute);text-transform:uppercase;display:flex;justify-content:space-between;cursor:pointer}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary::after{content:"+ ABRIR"}
+details.card[open]>summary::after{content:"− CERRAR"}
+details.card[open]>summary{border-bottom:1px solid var(--line)}
+details.card .card,details.card .bubble{margin:12px}
 .day .eur{position:absolute;bottom:3px;left:4px;right:3px;font-family:var(--mono);font-size:8px;color:var(--bone);opacity:.75;white-space:nowrap;overflow:hidden}
 
 /* bloques */
 .card{border:1px solid var(--line);background:var(--cell);margin:14px 0}
 .card>h3{margin:0;padding:9px 12px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10px;font-weight:500;color:var(--mute);letter-spacing:.18em;text-transform:uppercase;display:flex;justify-content:space-between}
 .card>.b{padding:12px}
+.card>h3>span:last-child{white-space:nowrap;margin-left:8px}
 .big{font-family:var(--head);font-size:52px;line-height:1;letter-spacing:.01em}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
 .kpi{padding:10px 12px;border-right:1px solid var(--line)}
@@ -250,8 +296,8 @@ input:focus,textarea:focus{border-color:var(--bone)}
       <button class="chip" id="hoy">HOY</button>
       <button class="ibtn" data-mv="1" aria-label="Siguiente">→</button>
     </div>
+    <div class="keys" id="keys"></div>
     <div id="m-mes">
-      <div class="types" id="types"></div>
       <div class="film">
         <div class="dow"><span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span></div>
         <div class="grid" id="grid"></div>
@@ -260,7 +306,6 @@ input:focus,textarea:focus{border-color:var(--bone)}
     </div>
     <div id="m-sem" hidden><div class="week" id="week"></div></div>
     <div id="m-dia" hidden><div class="dayv" id="dayv"></div></div>
-    <div class="legend" id="legend"></div>
   </section>
 
   <!-- CLIENTES -->
@@ -285,16 +330,12 @@ input:focus,textarea:focus{border-color:var(--bone)}
       <div class="lbl" id="flbl"></div>
       <button class="ibtn" data-mv="1">→</button>
     </div>
-    <div class="card">
-      <h3><span>Neto global del mes</span><span id="netohint"></span></h3>
-      <div class="b"><div class="big" id="neto">0 €</div></div>
-      <div class="kpis">
-        <div class="kpi"><small>Facturado</small><b id="k-fac">0 €</b></div>
-        <div class="kpi"><small>Cobrado</small><b id="k-cob" style="color:var(--ok)">0 €</b></div>
-        <div class="kpi"><small>Pendiente</small><b id="k-pen" style="color:var(--warn)">0 €</b></div>
-      </div>
-    </div>
-    <div class="card"><h3>Por nicho</h3><div id="nichos"></div></div>
+    <div class="card"><h3><span>Cuentas del mes</span><span id="netohint"></span></h3><div id="ticket"></div></div>
+    <div class="card"><h3><span>Por cobrar · todos los meses</span><span id="pend-n"></span></h3><div class="rows" id="pend"></div></div>
+    <div class="card"><h3><span>De dónde viene el dinero</span><span id="pie-hint"></span></h3><div id="fpie"></div></div>
+    <div class="card"><h3>Cada cosa con su cosa</h3><div id="nichos"></div></div>
+    <div class="card"><h3><span>Trabajos del mes</span><span id="lista-n"></span></h3><div class="opts filt" id="ffilt"></div><div class="rows" id="lista"></div></div>
+    <details class="card"><summary>Más datos · horas, fotos y año</summary>
     <div class="bubble">
       <div class="bh"><small>HORAS</small><b id="h-mes">0:00</b><span id="h-hint"></span></div>
       <div class="rows" id="h-cat"></div>
@@ -310,26 +351,27 @@ input:focus,textarea:focus{border-color:var(--bone)}
     </div>
     <div class="card"><h3>Por trabajo</h3><div class="rows" id="porcat"></div></div>
     <div class="card"><h3><span>Facturado</span><span id="anio"></span></h3><div class="b"><div class="chart" id="chart"></div></div></div>
-    <div class="card"><h3>Trabajos del mes</h3><div class="rows" id="lista"></div></div>
+    </details>
   </section>
 
-  <!-- GASTOS -->
+  <!-- GASTOS: todos juntos -->
   <section class="view" id="v-ia">
-    <div class="seg" id="gseg" style="grid-template-columns:1fr 1fr"><button data-gt="ia" class="on">IA · VÍDEO Y WEBS</button><button data-gt="personal">PERSONALES FIJOS</button></div>
     <div class="sec">
       <button class="ibtn" data-mv="-1">←</button>
       <div class="lbl" id="glbl"></div>
       <button class="ibtn" data-mv="1">→</button>
     </div>
     <div class="card">
-      <h3><span id="g-t1">Gasto IA del mes</span><span id="ghint"></span></h3>
-      <div class="b"><div class="big" id="gtot">0 €</div>
-      <button class="btn ghost" id="g-copiar">Repetir los fijos del mes anterior</button></div>
+      <h3><span>Gastos del mes</span><span id="ghint"></span></h3>
+      <div class="b"><div class="big" id="gtot">0 €</div><div id="gsplit"></div></div>
     </div>
-    <div class="card"><h3 id="g-t2">Herramientas del mes</h3><div class="rows" id="glista"></div></div>
-    <div class="card"><h3><span id="g-t3">Gasto IA por mes</span><span id="ganio"></span></h3><div class="b"><div class="chart" id="gchart"></div></div></div>
-    <div class="card"><h3><span>Por herramienta</span><span id="ganio2"></span></h3><div class="rows" id="gtools"></div></div>
-    <div class="card"><h3><span id="g-t4">IA frente a lo que generan</span><span id="ganio3"></span></h3><div class="rows" id="gratio"></div></div>
+    <div class="card"><h3><span>En qué se va</span><button class="chip" id="gscope" style="height:24px;padding:0 8px;font-size:9.5px"></button></h3><div id="gpie"></div></div>
+    <div class="card"><h3><span class="ghead"><i style="background:#ff4d1f"></i>IA · se resta de vídeo y webs</span><span id="gs-ia"></span></h3><div class="rows" id="gl-ia"></div>
+      <div class="b" style="border-top:1px solid var(--line)"><button class="btn ghost" style="margin:0" data-gadd="ia">+ Gasto de IA</button></div></div>
+    <div class="card"><h3><span class="ghead"><i style="background:#6fa8c9"></i>Personales · se restan del salario</span><span id="gs-personal"></span></h3><div class="rows" id="gl-personal"></div>
+      <div class="b" style="border-top:1px solid var(--line)"><button class="btn ghost" style="margin:0" data-gadd="personal">+ Gasto personal</button></div></div>
+    <div class="card"><h3><span>Lo que te queda en el año</span><span id="ganio3"></span></h3><div id="gratio"></div></div>
+    <div class="card"><h3><span>Gastos por mes</span><span id="ganio"></span></h3><div class="b"><div class="chart" id="gchart"></div></div></div>
   </section>
 
   <!-- AJUSTES -->
@@ -345,7 +387,7 @@ input:focus,textarea:focus{border-color:var(--bone)}
       <input type="file" id="impf" accept="application/json,.json" hidden>
       <button class="btn del" id="reset">Borrar todo</button>
     </div></div>
-    <div class="card"><h3><span>Instalar</span><span>VERSIÓN 8</span></h3><div class="b">
+    <div class="card"><h3><span>Instalar</span><span>VERSIÓN 9</span></h3><div class="b">
       <div class="hint">Ábrela en <b>Safari</b> → <b>Compartir</b> → <b>Añadir a pantalla de inicio</b>. Va a pantalla completa y sin internet.</div>
     </div></div>
   </section>
@@ -367,14 +409,14 @@ input:focus,textarea:focus{border-color:var(--bone)}
 const KEY='varam-agenda-v1';
 const COLORS=['#ff4d1f','#ece6d9','#c9d94a','#e0a43a','#6fa8c9','#c2708a','#8f8a80'];
 const DEFAULT={cats:[
-  {id:'video',name:'Edición de vídeo',code:'VID',color:'#ff4d1f',niche:'creativo',imgs:[
+  {id:'video',name:'Edición de vídeo',code:'VID',short:'EDITOR',color:'#ff4d1f',niche:'creativo',imgs:[
     {src:'img/comida-antes.jpg',label:'ANTES'},{src:'img/comida-despues.jpg',label:'DESPUÉS'}]},
-  {id:'videoclip',name:'Videoclips',code:'CLIP',color:'#c2708a',niche:'creativo',imgs:[
+  {id:'videoclip',name:'Videoclips',code:'CLIP',short:'CLIP',color:'#c2708a',niche:'creativo',imgs:[
     {src:'img/videoclip-1.jpg',label:'VIDEOCLIP'},{src:'img/videoclip-2.jpg',label:''}]},
-  {id:'web3d',name:'Webs 3D',code:'3D',color:'#ece6d9',niche:'creativo',art:'tren'},
-  {id:'camarero',name:'Extra camarero',code:'BAR',color:'#c9d94a',niche:'camarero',art:'bandeja'},
-  {id:'ventas',name:'Vinted / Wallapop',code:'VW',color:'#6fa8c9',niche:'ventas'},
-  {id:'salario',name:'Salario',code:'SAL',color:'#8f8a80',niche:'salario'}],
+  {id:'web3d',name:'Webs 3D',code:'3D',short:'WEB 3D',color:'#ece6d9',niche:'creativo',art:'tren'},
+  {id:'camarero',name:'Extra camarero',code:'BAR',short:'BAR',color:'#c9d94a',niche:'camarero',art:'bandeja'},
+  {id:'ventas',name:'Vinted / Wallapop',code:'VW',short:'VINTED',color:'#6fa8c9',niche:'ventas'},
+  {id:'salario',name:'Salario',code:'SAL',short:'SUELDO',color:'#8f8a80',niche:'salario'}],
   items:[],gastos:[]};
 /* nichos: cada uno con sus gastos que se restan */
 const NICHOS={
@@ -417,23 +459,30 @@ const fmtH=h=>{h=num(h);if(!h)return '0:00';const m=Math.round(h*60);return `${M
 const hrs=a=>a.reduce((s,i)=>s+num(i.hours),0);
 const cobr=a=>a.reduce((s,i)=>s+(i.paid?num(i.amount):Math.min(num(i.got),num(i.amount))),0);
 
-/* trabajos fijos mensuales: crea el apunte de cada mes desde que empieza hasta hoy */
-S.fixed=S.fixed||[];
-function fillFixed(){
-  const now=ym(new Date());let n=0;
-  S.fixed.forEach(f=>{
-    let [y,m]=f.start.split('-').map(Number);
-    for(let g=0;g<600;g++){
-      const k=`${y}-${pad(m)}`; if(k>now||(f.end&&k>f.end))break;
-      if(!S.items.some(i=>i.fixId===f.id&&i.date.startsWith(k))){
-        const last=new Date(y,m,0).getDate();
-        S.items.push({id:uid(),fixId:f.id,date:`${k}-${pad(Math.min(f.day,last))}`,cat:f.cat,cats:f.cats,client:f.client,title:f.title,hours:f.hours,
-          pay:f.pay,amount:f.amount,value:f.value,swap:f.swap,paid:false,got:'',note:f.note||''});n++}
-      m++; if(m>12){m=1;y++}
-    }
-  });
-  if(n)save();
-}
+/* FIJOS: ingresos (S.fixed) y gastos (S.gfixed) que se repiten solos cada mes.
+   Se rellenan hasta el mes que estés mirando (aunque sea el siguiente), se saltan los meses borrados (skip)
+   y paran en "end". */
+S.fixed=S.fixed||[]; S.gfixed=S.gfixed||[];
+const monthAdd=(k,n)=>{const [y,m]=k.split('-').map(Number),d=new Date(y,m-1+n,1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`};
+const daysIn=k=>{const [y,m]=k.split('-').map(Number);return new Date(y,m,0).getDate()};
+function eachMonth(f,upTo,cb){for(let k=f.start,g=0;g<600&&k<=upTo&&!(f.end&&k>f.end);k=monthAdd(k,1),g++)if(!(f.skip||[]).includes(k))cb(k)}
+function fillFixed(upTo){let n=0;
+  S.fixed.forEach(f=>eachMonth(f,upTo,k=>{
+    if(S.items.some(i=>i.fixId===f.id&&i.date.startsWith(k)))return;
+    S.items.push({id:uid(),fixId:f.id,date:`${k}-${pad(Math.min(f.day,daysIn(k)))}`,cat:f.cat,cats:f.cats,client:f.client,title:f.title,hours:f.hours,
+      pay:f.pay,amount:f.amount,value:f.value,swap:f.swap,paid:false,got:'',note:f.note||''});n++}));
+  return n}
+function fillG(upTo){let n=0;
+  S.gfixed.forEach(f=>eachMonth(f,upTo,k=>{
+    if(S.gastos.some(x=>x.fixId===f.id&&x.month===k))return;
+    S.gastos.push({id:uid(),fixId:f.id,type:f.type,tool:f.tool,month:k,amount:f.amount,sub:true,note:f.note||''});n++}));
+  return n}
+/* "se cobra solo" (p. ej. el sueldo): al llegar el día se marca cobrado, salvo que lo hayas tocado a mano */
+function autoPay(){let n=0;
+  S.items.forEach(i=>{if(i.fixId&&!i.paid&&!i.touched&&!num(i.got)&&i.date<=today&&payOf(i)==='pagado'){const f=S.fixed.find(x=>x.id===i.fixId);if(f&&f.auto){i.paid=true;n++}}});
+  return n}
+function fillAll(){const now=ym(new Date()),v=ym(cur),cap=monthAdd(now,24),up=v>now?(v>cap?cap:v):now;
+  if(fillFixed(up)+fillG(up)+autoPay())save()}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -446,10 +495,21 @@ const sum=a=>a.reduce((s,x)=>s+num(x.amount),0);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cat=id=>S.cats.find(c=>c.id===id)||{name:'Sin tipo',code:'—',color:'#555'};
 const codeOf=c=>esc(c.code||c.name.slice(0,3).toUpperCase());
+const shortOf=c=>esc((c.short||c.code||c.name.slice(0,6)).toUpperCase());
+const GCOL={ia:'#ff4d1f',personal:'#6fa8c9'};
+/* colores del círculo: IA en tonos cálidos, personales en fríos */
+const PAL={ia:['#ff4d1f','#e0a43a','#d9734a','#c2708a','#b8a24a','#ece6d9','#f2b8a0'],personal:['#6fa8c9','#5a7bd6','#4fb39a','#9b7fd1','#8f8a80','#c9d94a','#a9c7d9']};
+/* gráfica de círculo: parts=[{name,color,v,tag}] */
+function pie(parts,label){
+  parts=parts.filter(p=>p.v>0);const t=parts.reduce((s,p)=>s+p.v,0);
+  if(!t)return '<div class="empty">NADA TODAVÍA</div>';
+  let a=0;const g=parts.map(p=>{const s=a;a+=p.v/t*360;return `${p.color} ${s}deg ${a}deg`}).join(',');
+  return `<div class="pie"><div class="ring" style="background:conic-gradient(${g})"><div class="hole"><b>${eur(t)}</b><small>${label}</small></div></div>
+    <div class="pl">${parts.map(p=>`<div><i style="background:${p.color}"></i><span>${esc(p.name)}${p.tag?`<em>${p.tag}</em>`:''}<small>${eur(p.v)}</small></span><b>${Math.round(p.v/t*100)}%</b></div>`).join('')}</div></div>`}
 const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const today=ymd(new Date());
 let cur=new Date(); cur.setDate(1);
-let sel=today, view='cal', mode='mes', cliYear=new Date().getFullYear(), gtype='ia';
+let sel=today, view='cal', mode='mes', cliYear=new Date().getFullYear(), gtype='ia', gscope='mes', ffilt='todo';
 const DIAS=['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
 const cli=id=>S.clients.find(c=>c.id===id);
 const dt=s=>new Date(s+'T12:00');
@@ -466,7 +526,7 @@ const codeItem=i=>isPack(i)?'PACK':codeOf(cat(i.cat));
 const namesOf=i=>catsOf(i).map(id=>esc(cat(id).name)).join(' + ');
 const packBg=i=>{const cs=catsOf(i).map(id=>cat(id).color);return cs.length>1?`linear-gradient(180deg,${cs.map((c,k)=>`${c} ${k/cs.length*100}% ${(k+1)/cs.length*100}%`).join(',')})`:cs[0]};
 const blk=i=>{const c=cat(i.cat),k=cli(i.client);
-  return `<button class="blk" style="--c:${c.color}${isPack(i)?";border-image:"+packBg(i)+" 1":""}" data-edit="${i.id}"><small>${codeItem(i)}</small><b>${esc(i.title||k?.name||namesOf(i))}${i.title&&k?` · ${esc(k.name)}`:''}</b><span>${i.hours?fmtH(i.hours)+' h · ':''}${payOf(i)==='pagado'?eur(i.amount):PAY[payOf(i)].toUpperCase()}</span></button>`};
+  return `<button class="blk" style="--c:${c.color}${isPack(i)?";border-image:"+packBg(i)+" 1":""}" data-edit="${i.id}"><small>${isPack(i)?'PACK':shortOf(c)}</small><b>${esc(i.title||k?.name||namesOf(i))}${i.title&&k?` · ${esc(k.name)}`:''}</b><span>${i.hours?fmtH(i.hours)+' h · ':''}${payOf(i)==='pagado'?eur(i.amount):PAY[payOf(i)].toUpperCase()}</span></button>`};
 
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1700)}
 
@@ -481,13 +541,13 @@ function slate(){
 function renderCal(){
   $$('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
   ['mes','sem','dia'].forEach(m=>$('#m-'+m).hidden=m!==mode);
-  $('#legend').innerHTML=S.cats.map(c=>`<span><i style="background:${c.color}"></i>${esc(c.name)}</span>`).join('');
+  const m=ym(cur), mi=S.items.filter(i=>i.date.startsWith(m));
+  /* leyenda de colores con el nombre corto (y lo del mes en vista MES) */
+  $('#keys').innerHTML=S.cats.map(c=>{const n=mi.filter(i=>has(i,c.id)).length;
+    return `<span class="key" style="--c:${c.color}"><i></i><b>${shortOf(c)}</b>${mode==='mes'?`<span>${n?eur(catSum(mi,c.id)):'—'}</span>`:''}</span>`}).join('');
   if(mode==='sem')return renderWeek();
   if(mode==='dia')return renderDia();
   $('#mlbl').textContent=`${MES[cur.getMonth()]} ${cur.getFullYear()}`;
-  const m=ym(cur), mi=S.items.filter(i=>i.date.startsWith(m));
-  $('#types').innerHTML=S.cats.map(c=>{const it=mi.filter(i=>has(i,c.id));
-    return `<div class="type" style="--c:${c.color}"><small>${esc(c.name)}</small><b>${eur(catSum(mi,c.id))}</b><span>${it.length} ${it.length===1?'día':'días'}</span></div>`}).join('');
   const start=(cur.getDay()+6)%7, d0=new Date(cur); d0.setDate(1-start);
   let h='';
   for(let k=0;k<42;k++){
@@ -497,7 +557,8 @@ function renderCal(){
     const tot=sum(its), we=d.getDay()===0||d.getDay()===6;
     h+=`<button class="day${out?' out':''}${we?' we':''}${its.length?' has':''}${s===today?' today':''}${s===sel?' sel':''}" data-d="${s}">
       <span class="n">${pad(d.getDate())}</span>
-      ${its.flatMap(catsOf).slice(0,4).map(id=>`<i class="clip" style="background:${cat(id).color}"></i>`).join('')}
+      ${(()=>{const ids=its.flatMap(catsOf),mx=ids.length>3?2:3;
+        return ids.slice(0,mx).map(id=>`<span class="lab" style="--c:${cat(id).color}">${shortOf(cat(id))}</span>`).join('')+(ids.length>mx?`<span class="lab more">+${ids.length-mx} MÁS</span>`:'')})()}
       ${tot?`<span class="eur">${Math.round(tot)}€</span>`:''}</button>`;
   }
   $('#grid').innerHTML=h;
@@ -542,10 +603,28 @@ function renderFac(){
   const m=ym(cur), y=cur.getFullYear();
   $('#flbl').textContent=`${MES[cur.getMonth()]} ${y}`;
   const mi=S.items.filter(i=>i.date.startsWith(m)).sort((a,b)=>a.date.localeCompare(b.date));
-  const fac=sum(mi), cob=cobr(mi), gas=sum(S.gastos.filter(g=>g.month===m));
-  $('#k-fac').textContent=eur(fac);$('#k-cob').textContent=eur(cob);$('#k-pen').textContent=eur(fac-cob);
-  $('#neto').textContent=eur(fac-gas);
-  $('#netohint').textContent=gas?`ingresos − ${eur(gas)} gastos`:'';
+  const fac=sum(mi), cob=cobr(mi), gm=S.gastos.filter(g=>g.month===m);
+  const gia=sum(gm.filter(g=>(g.type||'ia')==='ia')), gpe=sum(gm.filter(g=>g.type==='personal'));
+  /* cuentas del mes, de arriba abajo como un ticket */
+  $('#netohint').textContent=`${mi.length} ${mi.length===1?'trabajo':'trabajos'}`;
+  $('#ticket').innerHTML=`<div class="tk"><span>Entra este mes</span><b>${eur(fac)}</b></div>
+    <div class="tk sub"><span>✓ Ya cobrado</span><b style="color:var(--ok)">${eur(cob)}</b></div>
+    <div class="tk sub"><span>⏳ Falta por cobrar</span><b style="color:var(--warn)">${eur(fac-cob)}</b></div>
+    <div class="tk"><span>− Gastos de IA</span><b style="color:var(--acc)">${gia?'− '+eur(gia):'0 €'}</b></div>
+    <div class="tk"><span>− Gastos personales</span><b style="color:var(--acc)">${gpe?'− '+eur(gpe):'0 €'}</b></div>
+    <div class="tk tot"><span>Te queda</span><b>${eur(fac-gia-gpe)}</b></div>`;
+  /* lo que te deben (de cualquier mes, hasta hoy) */
+  const P=S.items.filter(i=>payOf(i)==='pagado'&&!i.paid&&num(i.amount)>0&&i.date<=today).sort((a,b)=>a.date.localeCompare(b.date));
+  const pt=P.reduce((s,i)=>s+num(i.amount)-num(i.got),0);
+  $('#pend-n').textContent=P.length?eur(pt):'';
+  $('#pend').innerHTML=P.length?P.map(i=>{const c=cat(i.cat),k=cli(i.client),d=dt(i.date);
+    return `<div class="row" data-edit="${i.id}"><div class="code" style="--c:${c.color}">${codeItem(i)}</div>
+      <div class="t"><b>${esc(i.title)||namesOf(i)}</b><span>${d.getDate()} ${MES[d.getMonth()].slice(0,3)}${d.getFullYear()!==y?' '+d.getFullYear():''}${k?' · '+esc(k.name):''}${i.fixId?' · FIJO':''}${num(i.got)?' · ya pagó '+eur(i.got):''}</span></div>
+      <div class="m">${eur(num(i.amount)-num(i.got))}<br><button class="paybtn" data-pay="${i.id}">✓ COBRADO</button></div></div>`}).join('')
+    :`<div class="empty">TODO COBRADO ✓</div>`;
+  /* de dónde viene el dinero (círculo por tipo de trabajo) */
+  $('#pie-hint').textContent=MES[cur.getMonth()];
+  $('#fpie').innerHTML=pie(S.cats.map(c=>({name:c.name,color:c.color,v:catSum(mi,c.id)})),'este mes');
   // balance por nicho
   $('#nichos').innerHTML=Object.entries(NICHOS).filter(([k])=>S.cats.some(c=>nicheOf(c)===k)).map(([k,n])=>{
     const cs=S.cats.filter(c=>nicheOf(c)===k), ing=cs.reduce((s,c)=>s+catSum(mi,c.id),0);
@@ -583,46 +662,54 @@ function renderFac(){
   chart('#freechart',k=>S.items.filter(i=>i.date.startsWith(`${y}-${pad(k+1)}`)&&payOf(i)!=='pagado').length);
   $('#anio').textContent=y;
   chart('#chart',k=>sum(S.items.filter(i=>i.date.startsWith(`${y}-${pad(k+1)}`))));
-  $('#lista').innerHTML=mi.length?mi.map(rowItem).join(''):`<div class="empty">SIN TRABAJOS ESTE MES</div>`;
+  /* lista del mes con filtros */
+  const F={todo:['Todos',()=>true],pend:['Por cobrar',i=>payOf(i)==='pagado'&&!i.paid],cob:['Cobrados',i=>payOf(i)==='pagado'&&i.paid],gratis:['Gratis',i=>payOf(i)==='gratis'],canje:['Canjes',i=>payOf(i)==='canje']};
+  $('#ffilt').innerHTML=Object.entries(F).map(([k,[n,fn]])=>{const c=mi.filter(fn).length;return c||k==='todo'?`<button type="button" data-filt="${k}" class="${ffilt===k?'on':''}">${n} · ${c}</button>`:''}).join('');
+  const L=mi.filter(F[ffilt][1]);
+  $('#lista-n').textContent=eur(sum(L));
+  $('#lista').innerHTML=L.length?L.map(rowItem).join(''):`<div class="empty">${mi.length?'NADA CON ESTE FILTRO':'SIN TRABAJOS ESTE MES'}</div>`;
 }
 function chart(s,fn){
   const v=[...Array(12)].map((_,k)=>fn(k)), mx=Math.max(...v,1);
   $(s).innerHTML=v.map((x,k)=>`<div class="${k===cur.getMonth()?'cur':''}"><i style="height:${x/mx*100}%"></i><span>${MES[k][0].toUpperCase()}</span></div>`).join('');
 }
 
-/* GASTOS IA */
+/* GASTOS: todos juntos, separados por círculo y cada uno con lo que resta */
 function renderIA(){
-  const ia=gtype==='ia', G=S.gastos.filter(x=>(x.type||'ia')===gtype);
-  $$('#gseg button').forEach(b=>b.classList.toggle('on',b.dataset.gt===gtype));
-  $('#g-t1').textContent=ia?'Gasto IA del mes':'Gastos personales del mes';
-  $('#g-t2').textContent=ia?'Herramientas del mes':'Gastos del mes';
-  $('#g-t3').textContent=ia?'Gasto IA por mes':'Gastos personales por mes';
-  $('#g-t4').textContent=ia?'IA frente a vídeo y webs 3D':'Gastos frente a salario';
-  const m=ym(cur), y=cur.getFullYear(), g=G.filter(x=>x.month===m);
+  const m=ym(cur), y=String(cur.getFullYear()), isIA=x=>(x.type||'ia')==='ia';
+  const g=S.gastos.filter(x=>x.month===m), yg=S.gastos.filter(x=>x.month.startsWith(y));
+  const gi=g.filter(isIA), gp=g.filter(x=>!isIA(x)), tot=sum(g);
   $('#glbl').textContent=`${MES[cur.getMonth()]} ${y}`;
-  $('#gtot').textContent=eur(sum(g));
-  $('#ghint').textContent=`${eur(sum(G.filter(x=>x.month.startsWith(y))))} en ${y}`;
+  $('#gtot').textContent=eur(tot);
+  $('#ghint').textContent=`${eur(sum(yg))} en ${y}`;
+  const pc=v=>tot?Math.round(v/tot*100):0;
+  $('#gsplit').innerHTML=tot?`<div class="split"><i style="width:${pc(sum(gi))}%;background:${GCOL.ia}"></i><i style="width:${pc(sum(gp))}%;background:${GCOL.personal}"></i></div>
+    <div class="sl"><span>IA <b>${pc(sum(gi))}%</b> · ${eur(sum(gi))}</span><span>Personales <b>${pc(sum(gp))}%</b> · ${eur(sum(gp))}</span></div>`:'';
+  // círculo por concepto (mes o año)
+  const src=gscope==='anio'?yg:g, by={};
+  src.forEach(x=>{const k=(x.type||'ia')+'|'+x.tool;by[k]=(by[k]||0)+num(x.amount)});
+  $('#gscope').textContent=gscope==='anio'?'AÑO '+y+' ⇄':'ESTE MES ⇄';
+  const cnt={ia:0,personal:0};
+  $('#gpie').innerHTML=pie(Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{const [t,name]=k.split(/\|(.*)/),pl=PAL[t]||PAL.ia,n=cnt[t]=(cnt[t]||0)+1;return{name,v,color:pl[(n-1)%pl.length],tag:t==='ia'?'IA':'PERS.'}}),gscope==='anio'?'en '+y:'este mes');
+  // listas de cada tipo
+  const rowG=x=>`<div class="row" data-gedit="${x.id}">
+    <div class="code" style="--c:${GCOL[x.type||'ia']}">${isIA(x)?'IA':'€'}</div>
+    <div class="t"><b>${esc(x.tool)}</b><span>${x.fixId&&x.sub!==false?'↻ FIJO CADA MES':'Solo este mes'}${x.note?' · '+esc(x.note):''}</span></div>
+    <div class="m">${eur(x.amount)}</div></div>`;
+  const srt=a=>[...a].sort((p,q)=>num(q.amount)-num(p.amount));
+  $('#gl-ia').innerHTML=gi.length?srt(gi).map(rowG).join(''):'<div class="empty">SIN GASTOS DE IA ESTE MES</div>';
+  $('#gl-personal').innerHTML=gp.length?srt(gp).map(rowG).join(''):'<div class="empty">SIN GASTOS PERSONALES ESTE MES</div>';
+  $('#gs-ia').textContent=eur(sum(gi)); $('#gs-personal').textContent=eur(sum(gp));
   $('#ganio').textContent=y;
-  chart('#gchart',k=>sum(G.filter(x=>x.month===`${y}-${pad(k+1)}`)));
-  $('#glista').innerHTML=g.length?g.map(x=>`<div class="row" data-gedit="${x.id}">
-    <div class="code" style="--c:var(--mute)">${ia?'IA':'€'}</div>
-    <div class="t"><b>${esc(x.tool)}</b><span>${x.sub?'Fijo cada mes':'Pago puntual'}${x.note?' · '+esc(x.note):''}</span></div>
-    <div class="m">${eur(x.amount)}</div></div>`).join(''):`<div class="empty">SIN GASTOS ESTE MES</div>`;
-  // por herramienta / concepto en el año
-  const yg=G.filter(x=>x.month.startsWith(y)), tools={};
-  yg.forEach(x=>tools[x.tool]=(tools[x.tool]||0)+num(x.amount));
-  const tl=Object.entries(tools).sort((a,b)=>b[1]-a[1]), tmax=tl[0]?.[1]||1, ttot=sum(yg)||1;
-  $('#ganio2').textContent=y;
-  $('#gtools').innerHTML=tl.length?tl.map(([t,v],k)=>`<div class="row"><div class="code" style="--c:${k===0?'var(--acc)':'var(--mute)'}">${pad(k+1)}</div>
-    <div class="t"><b>${esc(t)}</b><span>${Math.round(v/ttot*100)}% del total</span><div class="bar"><i style="width:${v/tmax*100}%;background:${k===0?'var(--acc)':'var(--bone)'}"></i></div></div>
-    <div class="m">${eur(v)}</div></div>`).join(''):`<div class="empty">SIN GASTOS EN ${y}</div>`;
-  // gasto frente a lo que genera su nicho
-  const nk=ia?'creativo':'salario', yitems=S.items.filter(i=>i.date.startsWith(y));
-  const yf=S.cats.filter(c=>nicheOf(c)===nk).reduce((s,c)=>s+catSum(yitems,c.id),0), yi=sum(yg);
+  chart('#gchart',k=>sum(S.gastos.filter(x=>x.month===`${y}-${pad(k+1)}`)));
+  // lo que te queda en el año, cada cosa con su cosa
+  const yi=S.items.filter(i=>i.date.startsWith(y)), ing=nk=>S.cats.filter(c=>nicheOf(c)===nk).reduce((s,c)=>s+catSum(yi,c.id),0);
+  const blq=(name,a,gname,b,col)=>`<div class="tk"><span>${name}</span><b>${eur(a)}</b></div>
+    <div class="tk sub"><span>− ${gname}${a?` (${Math.round(b/a*100)}% de lo que entra)`:''}</span><b style="color:${col}">${b?'− '+eur(b):'0 €'}</b></div>
+    <div class="tk" style="background:var(--cell2)"><span><b style="font-family:var(--sans)">Te queda</b></span><b>${eur(a-b)}</b></div>`;
   $('#ganio3').textContent=y;
-  $('#gratio').innerHTML=`<div class="row"><div class="t"><b>${ia?'Vídeo y webs 3D':'Salario'}</b><div class="bar"><i style="width:100%;background:var(--ok)"></i></div></div><div class="m">${eur(yf)}</div></div>
-    <div class="row"><div class="t"><b>${ia?'Gasto IA':'Gastos personales'}</b><span>${yf?Math.round(yi/yf*100)+'% de lo que entra':'—'}</span><div class="bar"><i style="width:${yf?Math.min(100,yi/yf*100):0}%;background:var(--acc)"></i></div></div><div class="m">${eur(yi)}</div></div>
-    <div class="row"><div class="t"><b>Te queda</b></div><div class="m" style="font-family:var(--head);font-size:20px">${eur(yf-yi)}</div></div>`;
+  $('#gratio').innerHTML=blq('Vídeo y webs 3D',ing('creativo'),'Gastos de IA',sum(yg.filter(isIA)),GCOL.ia)
+    +blq('Salario',ing('salario'),'Gastos personales',sum(yg.filter(x=>!isIA(x))),GCOL.personal);
 }
 
 /* CLIENTES */
@@ -667,7 +754,7 @@ function renderMas(){
     <div class="m" style="color:var(--mute)">→</div></div>`).join('');
 }
 
-function render(){slate();({cal:renderCal,fac:renderFac,ia:renderIA,mas:renderMas,cli:renderCli})[view]()}
+function render(){fillAll();slate();({cal:renderCal,fac:renderFac,ia:renderIA,mas:renderMas,cli:renderCli})[view]()}
 
 /* HOJAS */
 function open(html){$('#sbody').innerHTML=html;$('#sheet').classList.add('on');$('#sbg').classList.add('on')}
@@ -683,8 +770,8 @@ function sheetItem(id,date){
     <label>Cliente</label><select id="f-cli">${cliOpts()}</select>
     <label>Descripción</label><input id="f-title" value="${esc(it.title)}" placeholder="Reel, boda, web… (opcional)">
     <label>Día</label><input id="f-date" type="date" value="${it.date}">
-    <label>Frecuencia</label><div class="opts" id="ffreq"><button type="button" data-v="una" class="${it.fixId?'':'on'}">Puntual</button><button type="button" data-v="mes" class="${it.fixId?'on':''}">Fijo · todos los meses</button></div>
-    ${it.fixId?`<div class="hint" style="margin-top:6px">Se repite cada mes desde ${(()=>{const f=S.fixed.find(x=>x.id===it.fixId);return f?MES[+f.start.slice(5)-1]+' '+f.start.slice(0,4):''})()}. Lo que cambies aquí se aplica también a los meses siguientes.</div>`:''}
+    <label>Frecuencia</label><div class="opts" id="ffreq"><button type="button" data-v="una" class="${it.fixId?'':'on'}">Solo este día</button><button type="button" data-v="mes" class="${it.fixId?'on':''}">↻ Fijo · se repite cada mes</button></div>
+    ${it.fixId?`<div class="hint" style="margin-top:6px">Se repite cada mes desde ${(()=>{const f=S.fixed.find(x=>x.id===it.fixId);return f?MES[+f.start.slice(5)-1]+' '+f.start.slice(0,4):''})()}. Lo que cambies aquí se aplica también a los meses siguientes que aún no estén cobrados.</div>`:''}
     <label id="tlbl">Tiempo</label>
     <div class="time"><div><input id="f-h" type="number" inputmode="numeric" min="0" step="1" value="${Math.floor(num(it.hours))||''}" placeholder="0"><span>h</span></div>
       <div class="opts" id="fmin">${[0,15,30,45].map(m=>`<button type="button" data-v="${m}" class="${Math.round(num(it.hours)%1*60)===m?'on':''}">${pad(m)}</button>`).join('')}</div></div>
@@ -694,6 +781,8 @@ function sheetItem(id,date){
       <label>Importe (€)</label><input id="f-amount" type="number" inputmode="decimal" step="0.01" value="${it.amount}" placeholder="0">
       <label>Estado</label><div class="opts" id="fpaid"><button type="button" data-v="0" class="${!it.paid&&!num(it.got)?'on':''}">Pendiente</button><button type="button" data-v="2" class="${!it.paid&&num(it.got)?'on':''}">Parte cobrada</button><button type="button" data-v="1" class="${it.paid?'on':''}">Cobrado</button></div>
       <div id="gotw"><label>Cobrado hasta ahora (€)</label><input id="f-got" type="number" inputmode="decimal" step="0.01" value="${it.got||''}" placeholder="0"><div class="hint" id="gotleft" style="margin-top:6px"></div></div>
+      <div id="autow"><label>Los meses siguientes</label><div class="opts" id="fauto"><button type="button" data-v="0">Lo marco yo</button><button type="button" data-v="1">Se cobra solo (sueldo)</button></div>
+        <div class="hint" style="margin-top:6px">«Se cobra solo»: cuando llega el día se marca <b>cobrado</b> sin que hagas nada.</div></div>
     </div>
     <div id="pay-otro">
       <div id="swapw"><label>A cambio de</label><input id="f-swap" value="${esc(it.swap)}" placeholder="Cena, ropa, un tatuaje…"></div>
@@ -705,10 +794,16 @@ function sheetItem(id,date){
     ${it.id?'<button class="btn del" id="f-del">Eliminar'+(it.fixId?' solo este mes':'')+'</button>':''}`);
   let freq=it.fixId?'mes':'una';
   const showFreq=()=>$('#tlbl').textContent=freq==='mes'?'Tiempo al mes':'Tiempo';
-  showFreq(); pick('#ffreq',v=>{freq=v;showFreq()});
-  if($('#f-stop'))$('#f-stop').onclick=()=>{const f=S.fixed.find(x=>x.id===it.fixId);f.end=it.date.slice(0,7);save();close();render();toast('YA NO SE REPITE')};
+  const fx=S.fixed.find(x=>x.id===it.fixId);
+  let auto=!!(fx&&fx.auto);
+  $$('#fauto button').forEach(b=>b.classList.toggle('on',(b.dataset.v==='1')===auto));
+  pick('#fauto',v=>auto=v==='1');
+  showFreq(); pick('#ffreq',v=>{freq=v;showFreq();showPay()});
+  /* parar un fijo: deja de repetirse y quita los meses futuros que aún no estén cobrados */
+  const stopFix=(f,k)=>{f.end=k;S.items=S.items.filter(i=>!(i.fixId===f.id&&i.date.slice(0,7)>k&&!i.paid&&!num(i.got)))};
+  if($('#f-stop'))$('#f-stop').onclick=()=>{stopFix(fx,it.date.slice(0,7));save();close();render();toast('YA NO SE REPITE')};
   let c=it.cat, st=it.paid?'1':num(it.got)?'2':'0', pay=payOf(it), mins=Math.round(num(it.hours)%1*60);
-  const showPay=()=>{$('#pay-pagado').hidden=pay!=='pagado';$('#pay-otro').hidden=pay==='pagado';$('#swapw').hidden=pay!=='canje';$('#gotw').hidden=st!=='2';
+  const showPay=()=>{$('#autow').hidden=freq!=='mes';$('#pay-pagado').hidden=pay!=='pagado';$('#pay-otro').hidden=pay==='pagado';$('#swapw').hidden=pay!=='canje';$('#gotw').hidden=st!=='2';
     $('#gotleft').textContent=`Falta por cobrar: ${eur(num($('#f-amount').value)-num($('#f-got').value))}`};
   showPay(); $('#f-got').oninput=$('#f-amount').oninput=showPay;
   let cs=catsOf(it).filter(id=>S.cats.some(x=>x.id===id));
@@ -728,39 +823,59 @@ function sheetItem(id,date){
       amount:pay==='pagado'?$('#f-amount').value:'',value:pay==='pagado'?'':$('#f-value').value,
       swap:pay==='canje'?$('#f-swap').value.trim():'',note:$('#f-note').value.trim()};
     if(pay!=='pagado')o.paid=false;
+    if(it.id&&st!==(it.paid?'1':num(it.got)?'2':'0'))o.touched=true;
     const tpl=x=>({cat:x.cat,cats:x.cats,client:x.client,title:x.title,hours:x.hours,pay:x.pay,amount:x.amount,value:x.value,swap:x.swap,note:x.note});
-    if(freq==='mes'&&!o.fixId){const f={id:uid(),start:o.date.slice(0,7),day:+o.date.slice(8),end:'',...tpl(o)};S.fixed.push(f);o.fixId=f.id}
-    else if(freq==='mes'){const f=S.fixed.find(x=>x.id===o.fixId);if(f)Object.assign(f,tpl(o))}
-    else if(freq==='una'&&o.fixId){const f=S.fixed.find(x=>x.id===o.fixId);if(f&&!f.end)f.end=o.date.slice(0,7)}
-    S.items=S.items.filter(i=>i.id!==o.id).concat(o);fillFixed();save();sel=o.date;close();render();toast(freq==='mes'?'GUARDADO · CADA MES':'GUARDADO');
+    const k=o.date.slice(0,7);
+    if(freq==='mes'&&!o.fixId){const f={id:uid(),start:k,day:+o.date.slice(8),end:'',skip:[],auto,...tpl(o)};S.fixed.push(f);o.fixId=f.id}
+    else if(freq==='mes'){const f=S.fixed.find(x=>x.id===o.fixId);
+      if(f){Object.assign(f,tpl(o),{day:+o.date.slice(8),auto});
+        /* aplica el cambio a los meses siguientes que aún no se han cobrado */
+        S.items.forEach(i=>{if(i.fixId===f.id&&i.id!==o.id&&i.date>o.date&&!i.paid&&!num(i.got)){const m2=i.date.slice(0,7);Object.assign(i,tpl(o));i.date=`${m2}-${pad(Math.min(f.day,daysIn(m2)))}`}})}}
+    else if(freq==='una'&&o.fixId){const f=S.fixed.find(x=>x.id===o.fixId);if(f)stopFix(f,k)}
+    S.items=S.items.filter(i=>i.id!==o.id).concat(o);save();sel=o.date;close();render();toast(freq==='mes'?'GUARDADO · CADA MES':'GUARDADO');
   };
-  if(it.id)$('#f-del').onclick=()=>{if(confirm('¿Eliminar este trabajo?')){S.items=S.items.filter(i=>i.id!==it.id);save();close();render()}};
+  if(it.id)$('#f-del').onclick=()=>{if(confirm(it.fixId?'¿Quitar solo este mes? Los demás meses siguen igual.':'¿Eliminar este trabajo?')){
+    if(fx){fx.skip=fx.skip||[];fx.skip.push(it.date.slice(0,7))}
+    S.items=S.items.filter(i=>i.id!==it.id);save();close();render()}};
 }
 
-function sheetGasto(id){
-  const g=S.gastos.find(x=>x.id===id)||{id:null,type:gtype,month:ym(cur),tool:'',amount:'',sub:true,note:''};
-  let t=g.type||'ia';
+function sheetGasto(id,type){
+  const g=S.gastos.find(x=>x.id===id)||{id:null,type:type||'ia',month:ym(cur),tool:'',amount:'',sub:true,note:''};
+  const f=S.gfixed.find(x=>x.id===g.fixId);
+  let t=g.type||'ia', s=g.id?(!!f&&g.sub!==false):true;
   open(`<h2>${g.id?'Editar gasto':'Nuevo gasto'}</h2>
-    <label>De qué es</label><div class="opts" id="gtype"><button type="button" data-v="ia" class="${t==='ia'?'on':''}">IA · se resta de vídeo y webs</button><button type="button" data-v="personal" class="${t==='personal'?'on':''}">Personal · se resta del salario</button></div>
+    <label>De qué es</label><div class="opts" id="gtype"><button type="button" data-v="ia" style="--c:${GCOL.ia}" class="${t==='ia'?'on':''}">IA · se resta de vídeo y webs</button><button type="button" data-v="personal" style="--c:${GCOL.personal}" class="${t==='personal'?'on':''}">Personal · se resta del salario</button></div>
     <label id="g-tl">Herramienta</label><input id="g-tool" list="gsug" value="${esc(g.tool)}">
     <datalist id="gsug"></datalist>
     <div class="two"><div><label>Mes</label><input id="g-month" type="month" value="${g.month}"></div>
     <div><label>Importe (€)</label><input id="g-amount" type="number" inputmode="decimal" step="0.01" value="${g.amount}" placeholder="0"></div></div>
-    <label>Frecuencia</label><div class="opts" id="gsub"><button type="button" data-v="1" class="${g.sub?'on':''}">Fijo cada mes</button><button type="button" data-v="0" class="${!g.sub?'on':''}">Puntual</button></div>
+    <label>¿Se repite?</label><div class="opts" id="gsub"><button type="button" data-v="1" class="${s?'on':''}">↻ Fijo · se pone solo cada mes</button><button type="button" data-v="0" class="${!s?'on':''}">Solo este mes</button></div>
+    ${f&&s?`<div class="hint" style="margin-top:6px">Se repite desde ${MES[+f.start.slice(5)-1]} ${f.start.slice(0,4)}. Si cambias el importe, cambia también en los meses siguientes.</div>`:''}
     <label>Nota</label><input id="g-note" value="${esc(g.note)}" placeholder="Opcional">
     <button class="btn" id="g-save">Guardar</button>
-    ${g.id?'<button class="btn del" id="g-del">Eliminar</button>':''}`);
-  let s=g.sub; pick('#gsub',v=>s=v==='1');
+    ${g.id&&f&&s?'<button class="btn ghost" id="g-skip">Quitar solo este mes</button><button class="btn del" id="g-stop">Ya no lo pago · quitar desde este mes</button>':g.id?'<button class="btn del" id="g-del">Eliminar</button>':''}`);
+  pick('#gsub',v=>s=v==='1');
   const showT=()=>{$('#g-tl').textContent=t==='ia'?'Herramienta':'Concepto';
     $('#g-tool').placeholder=t==='ia'?'Claude, Higgsfield, Meshy…':'Alquiler, luz, móvil…';
     $('#gsug').innerHTML=(t==='ia'?IA_SUG:PERS_SUG).map(x=>`<option value="${x}">`).join('')};
   showT(); pick('#gtype',v=>{t=v;showT()});
+  /* parar un gasto fijo: no se repite más allá de k */
+  const gStop=(fx,k)=>{fx.end=k;S.gastos=S.gastos.filter(x=>!(x.fixId===fx.id&&x.month>k))};
   $('#g-save').onclick=()=>{
     const tool=$('#g-tool').value.trim(); if(!tool)return toast(t==='ia'?'Pon la herramienta':'Pon el concepto');
-    const o={id:g.id||uid(),type:t,tool,month:$('#g-month').value||ym(cur),amount:$('#g-amount').value,sub:s,note:$('#g-note').value.trim()};
-    S.gastos=S.gastos.filter(x=>x.id!==o.id).concat(o);gtype=t;save();close();render();toast('GUARDADO');
+    const o={...g,id:g.id||uid(),type:t,tool,month:$('#g-month').value||ym(cur),amount:$('#g-amount').value,sub:s,note:$('#g-note').value.trim()};
+    const tp={type:o.type,tool:o.tool,amount:o.amount,note:o.note};
+    if(s&&!f){const nf={id:uid(),start:o.month,end:'',skip:[],...tp};S.gfixed.push(nf);o.fixId=nf.id}
+    else if(s&&f){Object.assign(f,tp);if(f.end&&f.end<=o.month)f.end='';
+      S.gastos.forEach(x=>{if(x.fixId===f.id&&x.id!==o.id&&x.month>o.month)Object.assign(x,tp)})}
+    else if(!s&&f)gStop(f,o.month);
+    S.gastos=S.gastos.filter(x=>x.id!==o.id).concat(o);save();close();render();toast(s?'GUARDADO · CADA MES':'GUARDADO');
   };
-  if(g.id)$('#g-del').onclick=()=>{if(confirm('¿Eliminar este gasto?')){S.gastos=S.gastos.filter(x=>x.id!==g.id);save();close();render()}};
+  if($('#g-skip'))$('#g-skip').onclick=()=>{if(confirm('¿Quitar este gasto solo de este mes? Los demás meses siguen.')){
+    f.skip=f.skip||[];f.skip.push(g.month);S.gastos=S.gastos.filter(x=>x.id!==g.id);save();close();render()}};
+  if($('#g-stop'))$('#g-stop').onclick=()=>{if(confirm('Se quita de este mes y de los siguientes. Los meses anteriores se quedan. ¿Seguro?')){
+    gStop(f,monthAdd(g.month,-1));save();close();render();toast('YA NO SE REPITE')}};
+  if($('#g-del'))$('#g-del').onclick=()=>{if(confirm('¿Eliminar este gasto?')){S.gastos=S.gastos.filter(x=>x.id!==g.id);save();close();render()}};
 }
 
 function sheetCat(id){
@@ -768,6 +883,7 @@ function sheetCat(id){
   open(`<h2>${c.id?'Editar trabajo':'Nuevo trabajo'}</h2>
     <div class="two" style="grid-template-columns:1fr 90px"><div><label>Nombre</label><input id="c-name" value="${esc(c.name)}" placeholder="Bodas, fotografía…"></div>
     <div><label>Siglas</label><input id="c-code" value="${esc(c.code)}" maxlength="4" placeholder="BOD" style="text-transform:uppercase;text-align:center"></div></div>
+    <label>Nombre en el calendario (corto)</label><input id="c-short" value="${esc(c.short||'')}" maxlength="8" placeholder="EDITOR, VINTED…" style="text-transform:uppercase">
     <label>Nicho</label><div class="opts" id="cniche">${Object.entries(NICHOS).map(([k,n])=>`<button type="button" data-v="${k}" class="${nicheOf(c)===k?"on":""}">${n.name}</button>`).join("")}</div>
     <label>Color</label><div class="colors" id="ccol">${COLORS.map(k=>`<button type="button" data-k="${k}" style="background:${k}" class="${k===c.color?'on':''}"></button>`).join('')}</div>
     <label>Fotos (salen en Facturas, máx. 4)</label><div class="thumbs" id="cimgs"></div>
@@ -784,7 +900,7 @@ function sheetCat(id){
   $$('#ccol button').forEach(b=>b.onclick=()=>{col=b.dataset.k;$$('#ccol button').forEach(x=>x.classList.toggle('on',x===b))});
   $('#c-save').onclick=()=>{
     const name=$('#c-name').value.trim(); if(!name)return toast('Ponle nombre');
-    const o={...c,id:c.id||uid(),name,code:($('#c-code').value.trim()||name.slice(0,3)).toUpperCase(),color:col,imgs,niche};
+    const o={...c,id:c.id||uid(),name,code:($('#c-code').value.trim()||name.slice(0,3)).toUpperCase(),short:($('#c-short').value.trim()||name.slice(0,6)).toUpperCase(),color:col,imgs,niche};
     const k=S.cats.findIndex(x=>x.id===o.id); k>=0?S.cats[k]=o:S.cats.push(o);save();close();render();toast('GUARDADO');
   };
   if(c.id)$('#c-del').onclick=()=>{const n=S.items.filter(i=>has(i,c.id)).length;
@@ -798,10 +914,11 @@ function shrink(file){return new Promise(r=>{const im=new Image();im.onload=()=>
 
 /* EVENTOS */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-gt],[data-pay],[data-edit],[data-gedit],[data-cedit],[data-cli],[data-new],[data-d],[data-mv],[data-mode],[data-go]');
+  const t=e.target.closest('[data-gadd],[data-filt],[data-pay],[data-edit],[data-gedit],[data-cedit],[data-cli],[data-new],[data-d],[data-mv],[data-mode],[data-go]');
   if(!t)return;
-  if(t.dataset.gt){gtype=t.dataset.gt;return render()}
-  if(t.dataset.pay){e.stopPropagation();const i=S.items.find(x=>x.id===t.dataset.pay);i.paid=!i.paid;if(i.paid)i.got='';save();render();toast(i.paid?'COBRADO':'PENDIENTE');return}
+  if(t.dataset.gadd)return sheetGasto(null,t.dataset.gadd);
+  if(t.dataset.filt){ffilt=t.dataset.filt;return render()}
+  if(t.dataset.pay){e.stopPropagation();const i=S.items.find(x=>x.id===t.dataset.pay);i.paid=!i.paid;i.touched=true;if(i.paid)i.got='';save();render();toast(i.paid?'COBRADO':'PENDIENTE');return}
   if(t.dataset.edit)return sheetItem(t.dataset.edit);
   if(t.dataset.gedit)return sheetGasto(t.dataset.gedit);
   if(t.dataset.cedit)return sheetCat(t.dataset.cedit);
@@ -823,19 +940,27 @@ $('#hoy').onclick=()=>{cur=new Date();cur.setDate(1);sel=today;render()};
 $('#fab').onclick=()=>view==='ia'?sheetGasto():view==='mas'?sheetCat():view==='cli'?sheetCli():sheetItem();
 $('#cli-year').onclick=()=>{const y=new Date().getFullYear();cliYear=cliYear==='todo'?y:cliYear===y?y-1:'todo';render()};
 $('#newcat').onclick=()=>sheetCat();
-$('#g-copiar').onclick=()=>{
-  const m=ym(cur),p=new Date(cur);p.setMonth(p.getMonth()-1);const pm=ym(p);
-  const subs=S.gastos.filter(x=>(x.type||'ia')===gtype&&x.month===pm&&x.sub&&!S.gastos.some(y=>y.month===m&&y.tool===x.tool&&(y.type||'ia')===gtype));
-  if(!subs.length)return toast('NADA QUE REPETIR');
-  S.gastos.push(...subs.map(x=>({...x,id:uid(),month:m})));save();render();toast(`${subs.length} AÑADIDAS`);
-};
+$('#gscope').onclick=()=>{gscope=gscope==='mes'?'anio':'mes';render()};
 $('#exp').onclick=()=>{const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`varam-agenda-${today}.json`;a.click()};
 $('#imp').onclick=()=>$('#impf').click();
-$('#impf').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!d.cats||!d.items)throw 0;S={gastos:[],clients:[],fixed:[],...d};save();render();toast('COPIA IMPORTADA')}catch(_){toast('ARCHIVO NO VÁLIDO')}};
-$('#reset').onclick=()=>{if(confirm('Se borrará todo lo apuntado en este iPhone. ¿Seguro?')){S={...structuredClone(DEFAULT),clients:[],fixed:[],v:2};save();render();toast('AGENDA VACÍA')}};
+$('#impf').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!d.cats||!d.items)throw 0;S={gastos:[],clients:[],fixed:[],gfixed:[],...d};save();toast('COPIA IMPORTADA');setTimeout(()=>location.reload(),600)}catch(_){toast('ARCHIVO NO VÁLIDO')}};
+$('#reset').onclick=()=>{if(confirm('Se borrará todo lo apuntado en este iPhone. ¿Seguro?')){S={...structuredClone(DEFAULT),clients:[],fixed:[],gfixed:[],v:4};save();render();toast('AGENDA VACÍA')}};
 
-fillFixed();render();
+/* actualización 4: los gastos "fijo cada mes" que ya tenías pasan a repetirse solos; nombres cortos para el calendario */
+if(!(S.v>=4)){
+  const prev=monthAdd(ym(new Date()),-1), groups={};
+  S.gastos.filter(x=>x.sub&&!x.fixId&&x.month).forEach(x=>{const k=(x.type||'ia')+'|'+String(x.tool).trim().toLowerCase();(groups[k]=groups[k]||[]).push(x)});
+  Object.values(groups).forEach(a=>{a.sort((p,q)=>p.month.localeCompare(q.month));const last=a[a.length-1];
+    const f={id:uid(),type:last.type||'ia',tool:last.tool,amount:last.amount,note:last.note||'',start:a[0].month,end:last.month<prev?last.month:'',skip:[]};
+    for(let k=f.start;k<last.month;k=monthAdd(k,1))if(!a.some(x=>x.month===k))f.skip.push(k);
+    a.forEach(x=>x.fixId=f.id);S.gfixed.push(f)});
+  const SH={video:'EDITOR',videoclip:'CLIP',web3d:'WEB 3D',camarero:'BAR',ventas:'VINTED',salario:'SUELDO'};
+  S.cats.forEach(c=>{if(!c.short)c.short=SH[c.id]||String(c.code||c.name.slice(0,6)).toUpperCase()});
+  S.fixed.forEach(f=>{if(!f.skip)f.skip=[]});
+  S.v=4;save();
+}
+render();
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update();document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update()})}).catch(()=>{});
   let recargado=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(recargado)return;recargado=true;location.reload()});
